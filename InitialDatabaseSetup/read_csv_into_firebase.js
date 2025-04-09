@@ -17,22 +17,14 @@ const firebaseConfig = {
 	const db = getFirestore(app);
 
 
-
-
-// conversion from csv to json
-// import convertCsvToJson from 'convert-csv-to-json';
-
-import { parse } from 'csv-parse/sync';
-
-
 // node's file system
 import fs from 'fs';
-import { json } from 'd3';
 
+// csv parsing
+import { parse } from 'csv-parse/sync';
 
+const dirName = 'initialDatabaseSetup'
 
-const fileInputName = 'initialDatabaseSetup/electronics_product.csv';
-const fileOutputName = 'initialDatabaseSetup/electronics_product.json';
 
 
 async function pushToFirebase(jsonData) {
@@ -61,7 +53,7 @@ async function pushToFirebase(jsonData) {
 	console.log("finished adding all documents");
 }
 
-function newGenerateJson() {
+function generateJson(fileInputName) {
 	//function inspired by: https://csv.js.org/parse/api/sync/
 
 	const csvData = fs.readFileSync(fileInputName, 'utf8');
@@ -78,7 +70,7 @@ function newGenerateJson() {
 function cleanJsonData(jsonData) {
 	for(let i in jsonData) {
 		//convert indian rupee to cad
-		console.log(jsonData[i].discount_price)
+		// console.log(jsonData[i].discount_price)
 		jsonData[i].discount_price = parseFloat(jsonData[i].discount_price.replace('₹', '').replace(',', '')) * 0.016;
 		jsonData[i].actual_price = parseFloat(jsonData[i].actual_price.replace('₹', '').replace(',', '')) * 0.016;
 	}
@@ -86,17 +78,32 @@ function cleanJsonData(jsonData) {
 }
 
 async function main() {
-	// let jsonData = generateJson();
-	let jsonData = newGenerateJson()
-	jsonData = cleanJsonData(jsonData);
 
-	pushToFirebase(jsonData);
-	console.log(jsonData);
+	const HOW_MANY_FILES_TO_LOOK_AT = 5
+	const ENTRIES_PER_FILE = 3
 
+	// for each file
+	let files = fs.readdirSync(`${dirName}/amazon/`);
+	let c = 0;
+	for(let file of files) {
+		console.log(file);
+		let jsonData = generateJson(`${dirName}/amazon/${file}`); // grab first 100 entries (1 entry to start with)
+		let snippet = jsonData.slice(0, ENTRIES_PER_FILE);
+		if (JSON.stringify(snippet) === '[]') {continue;}
 
+		let clean_snippet = cleanJsonData(snippet); // clean json data
+
+		console.log(`========================== pushing: ${file} ==========================`)
+		await pushToFirebase(clean_snippet);
+		console.log(`========================== finished ${file} ==========================\n\n`)
+
+		if (c === HOW_MANY_FILES_TO_LOOK_AT) break;
+		c++;
+	}
+	console.log("Database initialized\n");
 	return;
 }
 
 
-main();
-
+await main();
+process.exit()
