@@ -51,8 +51,8 @@ app.get('/api/products/{:product_id}', async (req, res) => {
 
     console.log("accessing firebase");
 
-    const cityRef = db.collection('products').doc('4JdOkDT4M1Wlm2G28X3h');
-    const doc = await cityRef.get();
+    const productRef = db.collection('products').doc(product_id);
+    const doc = await productRef.get();
     if (!doc.exists) {
         console.log(`Unable to fetch document: ${product_id}`);
     } else {
@@ -66,7 +66,7 @@ app.get('/api/products/{:product_id}', async (req, res) => {
 // });
 
 app.get('/api/sort/high_ratings', async (req, res) => {
-    const productsRef = db.collection('products').orderBy('ratings');
+    const productsRef = db.collection('products').orderBy('ratings', 'desc');
     const snapshot = await productsRef.get();
 
     // check for response

@@ -31,3 +31,6 @@ coverage
 
 # Firebase secrets
 secrets
+
+# dataset
+InitialDatabaseSetup/amazon
