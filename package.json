@@ -3,12 +3,20 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "main": "index.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "init-db": "node initialDatabaseSetup/read_csv_into_firebase.js"
   },
   "dependencies": {
+    "convert-csv-to-json": "^2.50.0",
+    "csv-parse": "^5.6.0",
+    "d3": "^7.9.0",
+    "express": "^5.1.0",
+    "firebase": "^11.6.0",
+    "jquery": "^3.7.1",
     "pinia": "^3.0.1",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
