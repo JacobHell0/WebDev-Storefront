@@ -35,7 +35,6 @@ onMounted(() => {
       </nav>
     </div>
   </header>
-
   <RouterView />
 </template>
 
