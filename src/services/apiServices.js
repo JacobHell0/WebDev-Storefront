@@ -16,16 +16,8 @@ const apiClient = axios.create({
 
 export default //CURRENTLY ALL JUST DEBUG REQUESTS
 {
-  getHelloMessage() 
-  {
-    return apiClient.get('/hello');
-  },
-  getGoodbyeMessage()
-  {
-    return apiClient.get('/goodbye')
-  },
   getServerStatus()
   {
-    return apiClient.get('/status')
+    return apiClient.get('/server-status')
   },
 };

@@ -9,13 +9,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-//API Endpoint
-app.get('/api/hello', (req, res) => {
-    console.log("Accessing /api/hello");
-    res.send('Hello from the server!!');
-});
-
-app.get('/api/status', (req, res) => {
+app.get('/api/server-status', (req, res) => {
     console.log("Accessing /api/serverStatus");
     res.send("If you are seeing this, the server is working :)");
 });
@@ -23,13 +17,11 @@ app.get('/api/status', (req, res) => {
 //Serve static files
 app.use(express.static(path.join(__dirname, 'dist')));
 
-
-
 //catch all other and return index.html
 app.get(/.*/, (req, res) => 
 {
     console.log("Requested URL:", req.originalUrl);
-    console.log("Request not caught ... giving the index.html")
+    console.log("Request not caught ... returning the index.html")
     res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
 });
 
