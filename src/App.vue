@@ -1,5 +1,19 @@
+<!-- Modified to allow login and check login status. If a profile is logged in, it can view profile if, if not, it can choose login -->
+
 <script setup>
 import { RouterLink, RouterView } from 'vue-router';
+import HelloWorld from './components/HelloWorld.vue';
+import { onMounted, ref } from 'vue';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
+//Check the status of user authentication
+const isLoggedIn = ref(false);
+onMounted(() => {
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    isLoggedIn.value = !!user;
+  });
+});
 </script>
 
 <template>
@@ -24,6 +38,11 @@ import { RouterLink, RouterView } from 'vue-router';
             <li><RouterLink to="/">Home</RouterLink></li>
             <li><RouterLink to="/cart">Cart</RouterLink></li>
             <li><RouterLink to="/profile">Profile</RouterLink></li>
+            <li><RouterLink to="/hello-from-server">Hello from Server</RouterLink></li>
+            <!-- Show Login link only if NOT logged in -->
+            <li><RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink></li>
+            <!-- Show Profile link ONLY IF LOGGED IN -->
+            <li><RouterLink v-if="isLoggedIn" to="/profile">Profile</RouterLink></li>
           </ul>
         </nav>
       </div>
