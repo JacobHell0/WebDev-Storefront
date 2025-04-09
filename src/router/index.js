@@ -3,7 +3,7 @@ import HomeView from '../views/HomeView.vue'
 // import Cart from '../views/Cart.vue';
 import HelloFromServer from '@/components/HelloFromServer.vue'
 import Login from '../components/Login.vue';
-import Profile from '../components/ProfileTest.vue'; 
+import Profile from '../components/Profile.vue'; 
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
