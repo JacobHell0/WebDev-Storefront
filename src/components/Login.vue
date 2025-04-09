@@ -235,6 +235,7 @@
                     firstName: this.userDetails.firstName,
                     lastName: this.userDetails.lastName,
                     address: this.userDetails.address,
+                    city: this.userDetails.city,
                     province: this.userDetails.province,
                     country: this.userDetails.country,
                     telephone: this.userDetails.telephone
