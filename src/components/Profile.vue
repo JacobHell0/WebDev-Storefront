@@ -7,6 +7,7 @@
       <p><strong>Last Name:</strong> {{ userDetails.lastName }}</p>
       <p><strong>Email:</strong> {{ user.email }}</p>
       <p><strong>Address:</strong> {{ userDetails.address }}</p>
+      <p><strong>Postal Code:</strong> {{ userDetails.postalcode }}</p>
       <p><strong>City:</strong> {{ userDetails.city }}</p>
       <p><strong>Province/State:</strong> {{ userDetails.province }}</p>
       <p><strong>Country:</strong> {{ userDetails.country }}</p>

@@ -14,7 +14,7 @@
     data() 
     {
       return {
-        message: 'Something went wrong :(', //Default message
+        message: 'Something went wrong (Server likely offline) :(', //Default message
       };
     },
     mounted() 
