@@ -28,3 +28,9 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+# firebase secrets
+secrets
+
+# dataset
+InitialDatabaseSetup/amazon

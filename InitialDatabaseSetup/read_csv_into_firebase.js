@@ -73,6 +73,9 @@ function cleanJsonData(jsonData) {
 		// console.log(jsonData[i].discount_price)
 		jsonData[i].discount_price = parseFloat(jsonData[i].discount_price.replace('₹', '').replace(',', '')) * 0.016;
 		jsonData[i].actual_price = parseFloat(jsonData[i].actual_price.replace('₹', '').replace(',', '')) * 0.016;
+		jsonData[i].no_of_ratings = parseFloat(jsonData[i].no_of_ratings);
+		jsonData[i].ratings = parseFloat(jsonData[i].ratings);
+
 	}
 	return jsonData;
 }
