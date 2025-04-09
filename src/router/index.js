@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+// import Cart from '../views/Cart.vue';
 import HelloFromServer from '@/components/HelloFromServer.vue'
 import Login from '../components/Login.vue';
 import Profile from '../components/ProfileTest.vue'; 
@@ -10,7 +11,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: HomeView
     },
     {
       path: '/about',
@@ -36,4 +37,4 @@ const router = createRouter({
   ],
 })
 
-export default router
+export default router;
