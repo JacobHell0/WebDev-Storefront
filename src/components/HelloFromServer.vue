@@ -5,24 +5,24 @@
         <p class="message-style">{{ message }}</p>
     </div>
   </template>
-  
+
   <script>
   import apiServices from '@/services/apiServices';
 
   export default
    {
-    data() 
+    data()
     {
       return {
         message: 'Something went wrong :(', //Default message
       };
     },
-    mounted() 
+    mounted()
     {
       this.fetchServerStatus();
     },
     methods: {
-      fetchServerStatus() 
+      fetchServerStatus()
       {
         apiServices.getServerStatus()
           .then(response => {
@@ -31,25 +31,32 @@
           .catch(error => {
             console.error('There was an error fetching the server status:', error); //Error
           });
+
+          // apiServices.getProduct('4JdOkDT4M1Wlm2G28X3h').then(response => {
+          //   console.log(response);
+          // });
+          apiServices.getSortedByRating().then(response => {
+            console.log(response);
+          });
+
       }
     }
   };
   </script>
-  
+
   <style scoped>
   .container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 60px; 
+    padding: 60px;
   }
-  
+
   .message-style {
     font-size: 24px;
-    font-weight: bold; 
-    text-align: center; 
-    padding: 10px; 
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
   }
   </style>
-  
