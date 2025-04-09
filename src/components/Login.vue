@@ -42,7 +42,7 @@
                         <option value="Canada">Canada</option>
                         <option value="USA">USA</option>
                     </select>
-                    <span v-if="errors.country" class="error-message">Please select a country.</span>
+                    <span v-if="errors.country" class="error-message">Please select a country</span>
                 </div>
                 <div class="form-group">
                     <label for="province">Province/State:</label>
@@ -50,19 +50,25 @@
                         <option value="" disabled>Select Province/State</option>
                         <option v-for="province in provinces" :key="province" :value="province">{{ province }}</option>
                     </select>
-                    <span v-if="errors.province" class="error-message">Please select a province or state.</span>
+                    <span v-if="errors.province" class="error-message">Please select a province or state</span>
                 </div>
                 <div class="form-group">
                     <label for="city">City:</label>
                     <input type="text" id="city" v-model="userDetails.city" :class="{'input-error': errors.city}" required>
-                    <span v-if="errors.city" class="error-message">City must contain only characters.</span>
+                    <span v-if="errors.city" class="error-message">City must contain only characters</span>
+                </div>
+                <div class="form-group">
+                    <label for="postalcode">Postal Code:</label>
+                    <input type="text" id="postalcode" v-model="userDetails.postalcode" :class="{'input-error': errors.postalcode}" required>
+                    <span v-if="errors.city" class="error-message">Must be atleast 5 characters</span>
                 </div>
                 <div class="form-group">
                     <label for="telephone">Telephone:</label>
                     <input type="text" id="telephone" v-model="userDetails.telephone" :class="{'input-error': errors.telephone}" required>
-                    <span v-if="errors.telephone" class="error-message">Telephone must be numerical and 10 digits long.</span>
+                    <span v-if="errors.telephone" class="error-message">Telephone must be numerical and 10 digits long</span>
                 </div>
             </div>
+            <!-- Buttons -->
             <div class="button-group">
                 <button type="submit" class="left-button">{{ isLogin ? 'Login' : 'Sign Up' }}</button>
                 <button @click="toggleForm" type="button" class="right-button">{{ isLogin ? 'Sign up' : 'Return to Login' }}</button>
@@ -95,6 +101,7 @@
             email: '',
             password: '',
             address: '',
+            postalcode: '',
             city: '', 
             province: '',
             country: '',
@@ -106,6 +113,7 @@
             email: '',
             password: '',
             address: '',
+            postalcode: '',
             city: '', 
             province: '',
             country: '',
@@ -157,6 +165,10 @@
             {
                 this.errors.city = this.userDetails.city && /^[a-zA-Z\s]+$/.test(this.userDetails.city) ? '' : 'City must contain only letters.';
             } 
+            else if (field === 'postalcode') 
+            {
+                this.errors.city = this.userDetails.postalcode && this.userDetails.postalcode.length > 4 ? '' : 'Postal/Zip Code must be at least 5 characters.';
+            }
             else if (field === 'province') 
             {
                 this.errors.province = this.userDetails.province ? '' : 'Please select a province or state.';
@@ -180,6 +192,7 @@
                 this.validateField('firstName');
                 this.validateField('lastName');
                 this.validateField('address');
+                this.validateField('postalcode'); 
                 this.validateField('city'); 
                 this.validateField('province');
                 this.validateField('country');
@@ -235,6 +248,7 @@
                     firstName: this.userDetails.firstName,
                     lastName: this.userDetails.lastName,
                     address: this.userDetails.address,
+                    postalcode: this.userDetails.postalcode,
                     city: this.userDetails.city,
                     province: this.userDetails.province,
                     country: this.userDetails.country,
