@@ -238,6 +238,7 @@ app.get('/api/order/get/:userid', async (req, res) => {
     // this endpoint will accept a user id and return that users orders as json
     // data
     const { userid } = req.params;
+    console.log(`getting order for user: ${userid}`)
 
     try {
         const userRef = db.collection('users').doc(userid);
@@ -325,6 +326,37 @@ app.get('/api/get/main-categories', async (req, res) => {
     // this endpoint will return the UNIQUE_CATEGORIES list
     console.log("returning unique categories");
     return res.send(UNIQUE_CATEGORIES);
+});
+
+app.post('/api/post/contact', async (req, res) => {
+    const { userid, name, email, subject, message } = req.body;
+    console.log("sending email");
+
+    if (!userid || !name || !email || !subject || !message) {
+        return res.status(400).json({error: 'All fields are required'});
+    }
+
+    try {
+        const userRef = db.collection('users').doc(userid);
+        const messageRef = userRef.collection('contact-message');
+
+        // Create a document to store the info
+        const newMessage = {
+            "name": name,
+            "email": email,
+            "subject": subject,
+            "message": message
+        };
+
+        const messageDocRef = await messageRef.add(newMessage);
+
+    } catch (error) {
+        console.error('Error adding order:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+
+
+    return res.status(200).json({message: 'Successfully processed form, email sent to: ', email});
 });
 
 

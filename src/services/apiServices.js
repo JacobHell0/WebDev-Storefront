@@ -90,5 +90,20 @@ export default //CURRENTLY ALL JUST DEBUG REQUESTS
                 throw error;
             });
     },
+    postContact(userid, name, email, subject, message) {
+        let jsonData = {
+            userid: userid,
+            name: name,
+            email: email,
+            subject: subject,
+            message: message
+        };
+        return apiClient.post('/post/contact', jsonData)
+            .then(response => response.data)
+            .catch(error => {
+                console.error(`error sending email: ${error}`)
+                throw error;
+            });
+    }
 
 };

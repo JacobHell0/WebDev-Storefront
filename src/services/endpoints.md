@@ -320,6 +320,23 @@ Example Output (json)
 }
 ```
 
+### `/api/post/contact`
+Example request through axios
+```js
+apiServices.postContact("5XKz7uJJioNpCgGHqdQ3w164JyN2", "Jacob",
+                        "jacob.h3ll0@gmail.com", "Subject!", "MY MESSAGE").then(response => {
+    console.log(response);
+});
+```
+
+Example Output (json)
+```json
+{
+    "message": "'Successfully processed form, email sent to: '",
+    "email": "'jacob.h3ll0@gmail.com'"
+}
+```
+
 
 
 

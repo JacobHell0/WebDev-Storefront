@@ -22,7 +22,7 @@
       this.fetchServerStatus();
     },
     methods: {
-      fetchServerStatus()
+      async fetchServerStatus()
       {
         apiServices.getServerStatus()
           .then(response => {
@@ -48,9 +48,9 @@
           //   });
           // });
 
-          // apiServices.getOrderHistory("5XKz7uJJioNpCgGHqdQ3w164JyN2").then(response => {
-          //   console.log(response);
-          // });
+        //   apiServices.getOrderHistory("5XKz7uJJioNpCgGHqdQ3w164JyN2").then(response => {
+        //     console.log(response);
+        //   });
 
         // apiServices.getByQuery("lloyd").then(response => {
         //     console.log(response);
@@ -60,6 +60,10 @@
         //     console.log(response);
         // });
 
+        apiServices.postContact("5XKz7uJJioNpCgGHqdQ3w164JyN2", "Jacob",
+                                "jacob.h3ll0@gmail.com", "Subject!", "MY MESSAGE").then(response => {
+            console.log(response);
+        });
 
       }
     }
