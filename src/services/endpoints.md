@@ -300,4 +300,26 @@ Example Output (list of json) [`{json}`, `{json}`]
 ]
 ```
 
+### `/api/get/main-categories`
+Example request through axios
+```js
+apiServices.getUniqueCategories().then(response => {
+    console.log(response);
+});
+```
+
+Example Output (json)
+```json
+{
+    [
+        "appliances",
+        "tv, audio & cameras",
+        "sports & fitness",
+        "..."
+    ]
+}
+```
+
+
+
 

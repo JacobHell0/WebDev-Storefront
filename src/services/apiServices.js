@@ -82,4 +82,13 @@ export default //CURRENTLY ALL JUST DEBUG REQUESTS
                 throw error;
             });
     },
+    getUniqueCategories() {
+        return apiClient.get(`/get/main-categories`)
+            .then(response => response.data)
+            .catch(error => {
+                console.error(`Server's probably down, this get can't error out: `, error)
+                throw error;
+            });
+    },
+
 };

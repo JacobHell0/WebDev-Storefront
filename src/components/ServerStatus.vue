@@ -52,9 +52,13 @@
           //   console.log(response);
           // });
 
-        apiServices.getByQuery("lloyd").then(response => {
-            console.log(response);
-        });
+        // apiServices.getByQuery("lloyd").then(response => {
+        //     console.log(response);
+        // });
+
+        // apiServices.getUniqueCategories().then(response => {
+        //     console.log(response);
+        // });
 
 
       }
