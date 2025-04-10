@@ -74,9 +74,9 @@
         // apiServices.deleteCart("5XKz7uJJioNpCgGHqdQ3w164JyN2").then(response => {
         //     console.log(response);
         // });
-        apiServices.deleteItemInCart("5XKz7uJJioNpCgGHqdQ3w164JyN2", "8iCL4tIC8nPgaH7gSgRe").then(response => {
-            console.log(response);
-        });
+        // apiServices.deleteItemInCart("5XKz7uJJioNpCgGHqdQ3w164JyN2", "8iCL4tIC8nPgaH7gSgRe").then(response => {
+        //     console.log(response);
+        // });
       }
     }
   };
