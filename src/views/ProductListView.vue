@@ -36,40 +36,45 @@
   
       <!-- Product List -->
       <section class="product-list">
-        <div class="product-card" v-for="product in filteredProducts" :key="product.id">
-            <img :src="product.image" :alt="product.name" class="product-image" />
+        <button
+          class="product-card"
+          v-for="product in filteredProducts"
+          :key="product.id"
+          @click="load_product_page(product.id)"
+        >
+          <img :src="product.image" :alt="product.name" class="product-image" />
 
-            <div class="product-info">
-                <h3 class="product-name">{{ product.name }}</h3>
-                <p class="rating">{{ product.ratings }} ⭐ ({{ product.no_of_ratings }} Ratings)</p>
-                
-                <div v-if="product.discount_price && product.discount_price < product.actual_price">
-                    <div class="discounted-price">
-                        <span class="discount-percent">
-                            -{{ getDiscountPercent(product.actual_price, product.discount_price) }}%
-                        </span>
-                        ${{ product.discount_price.toFixed(2) }}
-                    </div>
-                    <div class="list-price">List: ${{ product.actual_price.toFixed(2) }}</div>
-                </div>
-
-                <div class="product-price" v-else>
-                    ${{ product.actual_price.toFixed(2) }}
-                </div>
-
-                <button class="add-to-cart">Add to Cart</button>
+          <div class="product-info">
+            <h3 class="product-name">{{ product.name }}</h3>
+            <p class="rating">{{ product.ratings }} ⭐ ({{ product.no_of_ratings }} Ratings)</p>
+          
+            <div v-if="product.discount_price && product.discount_price < product.actual_price">
+              <div class="discounted-price">
+                <span class="discount-percent">
+                  -{{ getDiscountPercent(product.actual_price, product.discount_price) }}%
+                </span>
+                ${{ product.discount_price.toFixed(2) }}
+              </div>
+              <div class="list-price">List: ${{ product.actual_price.toFixed(2) }}</div>
             </div>
-        </div>
+          
+            <div class="product-price" v-else>
+              ${{ product.actual_price.toFixed(2) }}
+            </div>
+          </div>
+        </button>
       </section>
     </div>
+    
   </template>
   
   <script setup>
   import { ref, onMounted, computed } from 'vue';
-  import { useRoute } from 'vue-router';
+  import { useRoute, useRouter } from 'vue-router';
   import apiServices from '@/services/apiServices';
   
   const route = useRoute();
+  const router = useRouter();
   const products = ref([]);
   const selectedFilters = ref({
     price: '',
@@ -136,6 +141,12 @@
     });
   });
 
+
+  function load_product_page(productId) {
+    router.push(`/product/${productId}`);
+  }
+
+
   
   </script>
   
@@ -193,14 +204,22 @@
   }
   
   .product-card {
-    display: flex;
-    background: #fff;
-    border-radius: 8px;
-    padding: 1rem;
-    gap: 1rem;
-    align-items: flex-start;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  }
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  gap: 1rem;
+  align-items: flex-start;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.product-card:hover {
+  background-color: #f0f0f0;
+}
+
   
   .product-card img {
     width: 200px;
