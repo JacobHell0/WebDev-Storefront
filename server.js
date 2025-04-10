@@ -339,8 +339,8 @@ app.post('/api/post/contact', async (req, res) => {
         };
 
         const messageDocRef = await messageRef.add(newMessage);
-
-        await sendEmail(name, email, subject, message);
+        let new_message = `Hello ${name}! This is a copy of the email sent to CapJas!\n\n` + message;
+        await sendEmail(name, email, subject, new_message);
 
     } catch (error) {
         console.error('Error adding order:', error);
