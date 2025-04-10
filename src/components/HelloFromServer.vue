@@ -32,12 +32,12 @@
             console.error('There was an error fetching the server status:', error); //Error
           });
 
-          // apiServices.getProduct('4JdOkDT4M1Wlm2G28X3h').then(response => {
-          //   console.log(response);
-          // });
-          apiServices.getSortedByRating().then(response => {
+          apiServices.getProduct('4V5WWqlflRrTHLdVF4oi').then(response => {
             console.log(response);
           });
+          // apiServices.getSortedByRating().then(response => {
+          //   console.log(response);
+          // });
 
       }
     }

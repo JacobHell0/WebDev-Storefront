@@ -44,9 +44,12 @@ initializeApp({
 
 const db = getFirestore();
 
+/////////////////////////////   Error Handling    /////////////////////////////
+
+
 ///////////////////////////// Firebase Endpoints /////////////////////////////
 
-app.get('/api/products/{:product_id}', async (req, res) => {
+app.get('/api/products/:product_id', async (req, res) => {
     const { product_id } = req.params;
 
     console.log("accessing firebase");
@@ -55,8 +58,10 @@ app.get('/api/products/{:product_id}', async (req, res) => {
     const doc = await productRef.get();
     if (!doc.exists) {
         console.log(`Unable to fetch document: ${product_id}`);
+        return res.status(404).json({message: "error, document does not exist"})
     } else {
         console.log('Document fetched:', doc.data());
+        return res.status(200).json(doc.data())
     }
 });
 
