@@ -90,7 +90,7 @@
             </div>
             </div>
         </div>
-    </div>
+        </div>
 
         <!-- Payment Methods -->
         <div v-if="currentTab === 'Payment Methods'" class="payment-methods">
