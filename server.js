@@ -364,9 +364,15 @@ app.put('/api/cart/put/:userid/', async (req, res) => {
         const orderHistoryRef = userRef.collection('cart');
 
         let arr = []
+
         for(let entry of jsonData) {
             if (!("id" in entry)) {return res.status(400).json({ message: `Bad request, this json object: ${entry} does not contain the (Firebase) 'id' field.` });}
-            arr.push(entry.id);
+
+            if (entry.count === undefined) {
+                entry.count = 1;
+            }
+            arr.push({ id: entry.id, count: entry.count });
+
         }
         // Create a new order document
         const newCart = {

@@ -65,6 +65,7 @@
         //     console.log(response);
         // });
         let jsonData = await apiServices.getByQuery("laptop");
+        jsonData[0].count = 2;
         apiServices.putItemInCart("5XKz7uJJioNpCgGHqdQ3w164JyN2", jsonData);
 
       }
