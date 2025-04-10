@@ -36,6 +36,7 @@ async function pushToFirebase(jsonData) {
 		try {
 			const docRef = await addDoc(collection(db, "products"), {
 				name: i['name'],
+				lowercase_name: i['lowercase_name'],
 				main_category: i['main_category'],
 				sub_category: i['sub_category'],
 				image: i['image'],
@@ -75,14 +76,14 @@ function cleanJsonData(jsonData) {
 		jsonData[i].actual_price = parseFloat(jsonData[i].actual_price.replace('₹', '').replace(',', '')) * 0.016;
 		jsonData[i].no_of_ratings = parseFloat(jsonData[i].no_of_ratings);
 		jsonData[i].ratings = parseFloat(jsonData[i].ratings);
-
+		jsonData[i].lowercase_name = jsonData[i].name.toLowerCase();
 	}
 	return jsonData;
 }
 
 async function main() {
 
-	const HOW_MANY_FILES_TO_LOOK_AT = 5
+	const HOW_MANY_FILES_TO_LOOK_AT = 2
 	const ENTRIES_PER_FILE = 3
 
 	// for each file
