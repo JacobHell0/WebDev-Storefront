@@ -1,126 +1,74 @@
-<script>
+<script setup>
 import CartItem from '@/components/CartItem.vue'
 import CartSummary from '@/components/CartSummary.vue';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, getDocs } from 'firebase/firestore';
-import { app } from '@/firebase';
-import apiServices from '@/services/apiServices';
-import router from '@/router';
+import { ref, onMounted, onUnmounted } from 'vue'
 
-export default 
-{
-    data() 
+const cartItems = ref([
     {
-        return {
-            userDetails: {},
-        };
+        "id": 5928101,
+        "img": "🛒",
+        "model": "GeForce 4070",
+        "cost": 385,
+        "sale": 0.15,
+        "num": 5
     },
-    created() 
     {
-        const auth = getAuth(app); //Get user auth
-        onAuthStateChanged(auth, async (user) => {
-            if (user) //Make sure they are authed
-            {
-                this.user = user;
-                await this.fetchUserDetails(user.uid);
-                await this.fetchCards();
-                await this.loadOrderHistory();
-            } 
-            else //Otherwise return them to the login page
-            {
-                router.push('/login');
-            }
-        });
+        "id": 4582797,
+        "img": "🛒",
+        "model": "GeForce 4090",
+        "cost": 450,
+        "sale": 0.12,
+        "num": 3
     },
-    methods: 
     {
-        async loadOrderHistory() //Load the users order history using API
-        {
-            this.loadingOrders = true;
-            try 
-            {
-                const response = await apiServices.getCartItems(this.user.uid);
-                this.orderHistory = Array.isArray(response) ? response : []; //If the response is not incorrect form, it will just make it empty to avoid runtime errs
-                console.log('Loaded order history:', this.orderHistory);
-            } 
-            catch (error)
-            {
-                console.error("Failed to load order history:", error);
-                this.orderHistory = [];
-            } 
-            finally 
-            {
-                this.loadingOrders = false;
-            }
-        },
+        "id": 8419988,
+        "img": "🛒",
+        "model": "GeForce 5090",
+        "cost": 750,
+        "sale": 0.0,
+        "num": 1
     },
-};
+    {
+        "id": 5928101,
+        "img": "🛒",
+        "model": "GeForce 5070ti",
+        "cost": 625,
+        "sale": 0.1,
+        "num": 2
+    },
+    {
+        "id": 4582797,
+        "img": "🛒",
+        "model": "GeForce 5080",
+        "cost": 650,
+        "sale": 0.05,
+        "num": 2
+    }
+]);
 
-// const cartItems = ref([
-//     {
-//         "id": 5928101,
-//         "img": "🛒",
-//         "model": "GeForce 4070",
-//         "cost": 385,
-//         "sale": 0.15,
-//         "num": 5
-//     },
-//     {
-//         "id": 4582797,
-//         "img": "🛒",
-//         "model": "GeForce 4090",
-//         "cost": 450,
-//         "sale": 0.12,
-//         "num": 3
-//     },
-//     {
-//         "id": 8419988,
-//         "img": "🛒",
-//         "model": "GeForce 5090",
-//         "cost": 750,
-//         "sale": 0.0,
-//         "num": 1
-//     },
-//     {
-//         "id": 5928101,
-//         "img": "🛒",
-//         "model": "GeForce 5070ti",
-//         "cost": 625,
-//         "sale": 0.1,
-//         "num": 2
-//     },
-//     {
-//         "id": 4582797,
-//         "img": "🛒",
-//         "model": "GeForce 5080",
-//         "cost": 650,
-//         "sale": 0.05,
-//         "num": 2
-//     }
-// ]);
+// onMounted(() => {
+//     console.log("--- cart mounted ---");
 
-// async onMounted(() => {
-//     try 
-//                 {
-//                     const response = await apiServices.getOrderHistory(this.user.uid);
-//                     this.orderHistory = Array.isArray(response) ? response : []; //If the response is not incorrect form, it will just make it empty to avoid runtime errs
-//                     console.log('Loaded order history:', this.orderHistory);
-//                 } 
-//                 catch (error)
-//                 {
-//                     console.error("Failed to load order history:", error);
-//                     this.orderHistory = [];
-//                 } 
+//     // API call here
+//     CardServices.getGraphicCards()
+//     // Callback when promise is resolved
+//     .then((response) => {
+//         cartItems.value = response.data
+//     })
+//     // Callback when promise is rejected
+//     .catch((error) => {
+//         console.log('== FAILED == \n', error)
+//     });
 // });
 
-// // onUnmounted(() => {
-// //     console.log('--- cart unmounted ---');
-// // });
+onUnmounted(() => {
+    console.log('--- cart unmounted ---');
+});
 
-// function thisWorks() {
-//     console.log("you clicked checkout")
-// }
-// </script>
+function thisWorks() {
+    console.log("you clicked checkout")
+}
+</script>
 
 <template>
     <div class=flex id="page">
