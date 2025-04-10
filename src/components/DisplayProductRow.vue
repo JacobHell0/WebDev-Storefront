@@ -108,6 +108,8 @@
   
   .row-title {
     margin-bottom: 0.5rem;
+    color: #003C71;
+    font-weight: bold;
   }
   
   .row-scroll-container {
@@ -137,18 +139,22 @@
 }
   
   .product-card {
-  min-width: 220px; /* wider */
+  min-width: 220px;
   max-width: 220px;
   padding: 0.75rem;
+  border: 1px solid #e8e6e6;
   border-radius: 6px;
-  background-color: #f5f5f5;
-  text-align: center;
-  border: none;
+  background-color: white;
+  text-align: left;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   height: 280px;
+}
+
+.product-card:hover {
+  background-color: #f0f0f0;
 }
 
 .product-image {
@@ -202,7 +208,7 @@
 }
 
 .discount-percent {
-  color: #b12704;
+  color: red;
   font-weight: bold;
   margin-bottom: 0.2rem;
   font-size: 1.25rem;
