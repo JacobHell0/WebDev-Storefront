@@ -26,7 +26,7 @@ export default //CURRENTLY ALL JUST DEBUG REQUESTS
     },
     getServerStatus()
     {
-        return apiClient.get('/status')
+        return apiClient.get('/server-status')
     },
     getProduct(productId) {
         return apiClient.get(`/products/${productId}`)

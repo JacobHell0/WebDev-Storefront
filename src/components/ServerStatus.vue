@@ -38,9 +38,9 @@
           // apiServices.getSortedByRating().then(response => {
           //   console.log(response);
           // });
-          apiServices.getByCategory().then(response => {
-            console.log(response);
-          });
+          // apiServices.getByCategory().then(response => {
+          //   console.log(response);
+          // });
 
       }
     }
