@@ -60,10 +60,12 @@
         //     console.log(response);
         // });
 
-        apiServices.postContact("5XKz7uJJioNpCgGHqdQ3w164JyN2", "Jacob",
-                                "jacob.h3ll0@gmail.com", "Subject!", "MY MESSAGE").then(response => {
-            console.log(response);
-        });
+        // apiServices.postContact("5XKz7uJJioNpCgGHqdQ3w164JyN2", "Jacob",
+        //                         "jacob.h3ll0@gmail.com", "Subject!", "MY MESSAGE").then(response => {
+        //     console.log(response);
+        // });
+        let jsonData = await apiServices.getByQuery("laptop");
+        apiServices.putItemInCart("5XKz7uJJioNpCgGHqdQ3w164JyN2", jsonData);
 
       }
     }

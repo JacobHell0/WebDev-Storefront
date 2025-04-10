@@ -104,6 +104,23 @@ export default //CURRENTLY ALL JUST DEBUG REQUESTS
                 console.error(`error sending email: ${error}`)
                 throw error;
             });
-    }
+    },
+    putItemInCart(userid, jsonData) {
+
+        let properJsonData = {
+            "jsonData": jsonData
+        }
+
+        console.log(properJsonData);
+
+        return apiClient.put(`/cart/put/${userid}/`, properJsonData)
+            .then(response => response.data)
+            .catch(error => {
+                console.error(`Error updating cart: ${error}`);
+                throw error;
+            });
+    },
+
+
 
 };

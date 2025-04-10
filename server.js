@@ -351,6 +351,59 @@ app.post('/api/post/contact', async (req, res) => {
     return res.status(200).json({message: 'Successfully processed form, email sent to: ', email});
 });
 
+app.put('/api/cart/put/:userid/', async (req, res) => {
+    console.log("updating cart");
+    const { userid } = req.params;
+    const { jsonData } = req.body;
+
+    console.log(jsonData);
+
+    //puts a list of products id into the database
+    try {
+        const userRef = db.collection('users').doc(userid);
+        const orderHistoryRef = userRef.collection('cart');
+
+        let arr = []
+        for(let entry of jsonData) {
+            if (!("id" in entry)) {return res.status(400).json({ message: `Bad request, this json object: ${entry} does not contain the (Firebase) 'id' field.` });}
+            arr.push(entry.id);
+        }
+        // Create a new order document
+        const newCart = {
+            productIds: arr,
+        };
+
+        const orderDocRef = await orderHistoryRef.add(newCart);
+
+        console.log("order added successfully");
+        return res.status(201).json({
+            message: 'Order added to user history',
+            orderId: orderDocRef.id,
+            data: orderDocRef
+        });
+
+    } catch (error) {
+        console.error('Error adding order:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+
+
+});
+
+app.get('/api/cart/get/:userid/', async (req, res) => {
+    //gets a full list of cart items
+});
+
+
+
+app.delete('/api/cart/delete/:userid/:productid', async (req, res) => {
+    //removes an item from your cart
+});
+
+app.delete('/api/cart/delete/:userid/all', async (req, res) => {
+    //removes all items from your cart
+});
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
