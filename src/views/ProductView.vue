@@ -46,7 +46,6 @@
             </button>
         </div>
 
-        <!-- Maybe temporary -->
         <div class="rating-distribution">
           <h3>Ratings Chart</h3>
           <div ref="chartContainer" class="chart-container"></div>
@@ -57,7 +56,6 @@
     <div class="suggested-products-container">
         <h3>Suggested Products</h3>
         <div class="suggested-products-grid">
-            <!-- Each card just navigates to home page for now -->
             <router-link v-for="product in suggestedProducts" :key="product.name" :to="`/product/${product.id}`" class="suggested-product-card">
                 <img :src="product.image" :alt="product.name" class="suggested-product-image">
                 <div class="suggested-product-details">
@@ -80,7 +78,7 @@
     </div>
   </div>
   
-  <!-- Toast Notification -->
+  <!-- Added to cart notification -->
   <Transition name="toast">
     <div v-if="showToast" class="toast">
       <span class="toast-icon">✓</span>
@@ -96,7 +94,7 @@ import { ref, onMounted, watch } from 'vue';
 import apiServices from '@/services/apiServices';
 import { useRoute } from 'vue-router';
 
-// Function to get random items from array
+// Function to get random suggested items list each time
 const RandomlyChooseSuggested = (products, count = 4) => {
   const shuffled = [...products].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, count);
@@ -106,19 +104,23 @@ const route = useRoute();
 let product = ref({});
 let suggestedProducts = ref([]);
 
+// Loading in product data from server using its ID
 const loadProduct = async () => {
   try {
     const productId = route.params.id;
     product.value = await apiServices.getProduct(productId);
 
+    // If the ratings value is null/NaN, set it to 0
     if (product.value.no_of_ratings === null) {
       product.value.no_of_ratings = 0;
     }
     
+    // If main category exists, get all items that share same category, and add them to suggested list
     if (product.value.main_category) {
       const sharedCategoryProducts = await apiServices.getByCategory(product.value.main_category);
       const filteredProducts = sharedCategoryProducts.filter(p => p.id !== route.params.id);
       
+      // If there's more than 4 similar items, choose random 4 from list, otherwise display all of them
       if (filteredProducts.length > 4) {
         suggestedProducts.value = RandomlyChooseSuggested(filteredProducts);
       } else {
@@ -130,7 +132,7 @@ const loadProduct = async () => {
   }
 };
 
-// Watch for route changes
+// Better responsiveness switching between products
 watch(
   () => route.params.id,
   async (suggestedId) => {
@@ -147,13 +149,13 @@ onMounted(async () => {
 });
 
 
-// this is temporary maybe all AI generated
 import * as d3 from 'd3';
 
 const chartContainer = ref(null);
 let svg = null;
 
-// Function to calculate rating distribution
+// Following is the Ai generated function mentioned in ai-prompts.txt
+// ---------------------------------------------------------------------------
 function calculateRatingDistribution(averageRating, totalRatings) {
   // Calculate total points needed
   const totalPoints = Math.round(averageRating * totalRatings);
@@ -218,6 +220,8 @@ function calculateRatingDistribution(averageRating, totalRatings) {
     count: count
   })).sort((a, b) => b.rating - a.rating);
 }
+//  ---------------------------------------------------------------------------
+
 
 // Function to create/update the chart
 function updateChart() {
@@ -286,7 +290,6 @@ function updateChart() {
     .style('text-anchor', 'end')
     .style('fill', '#666');
 
-  // Add axes
   svg.append('g')
     .attr('transform', `translate(0,${height})`)
     .call(d3.axisBottom(x).ticks(5))
@@ -299,8 +302,10 @@ function updateChart() {
     .style('color', '#666');
 }
 
+// Item quantity for cart
 const quantity = ref(1);
 
+// Max of 30
 const incrementQuantity = () => {
   if (quantity.value < 30) {
     quantity.value++;
@@ -313,8 +318,10 @@ const decrementQuantity = () => {
   }
 };
 
+// Added to cart notification
 const showToast = ref(false);
 
+// Add to cart logic to call the notification
 const addToCart = () => {
   console.log(`Logging to send to cart page\nAdding ${quantity.value} items to cart\nProduct ID: ${product.value.id}`);
   showToast.value = true;
