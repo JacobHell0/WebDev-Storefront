@@ -69,40 +69,40 @@
             </div>
         </div>
         
-        <!-- Order History -->
-        <div v-if="currentTab === 'Order History'" class="order-history">
-            <div v-if="loadingOrders" class="no-orders">
-                <p>Loading...</p>
-            </div>
+            <!-- Order History -->
+            <div v-if="currentTab === 'Order History'" class="order-history">
+                <div v-if="loadingOrders" class="no-orders">
+                    <p>Loading...</p>
+                </div>
 
-            <div v-else-if="orderHistory.length === 0" class="no-orders">
-                <p>No Order History</p>
-            </div>
-        <div v-else class="order-list">
-            <div v-for="(order, orderIndex) in orderHistory" :key="orderIndex" class="order-box">
-            <h3>Order #{{ orderIndex + 1 }}</h3>
-            <div v-for="item in order" :key="item.id" class="order-item">
-                <img :src="item.image" :alt="item.name" class="item-image" />
-                <div class="item-details">
-                <a :href="item.link" target="_blank">{{ item.name }}</a>
-                <p>Price: ${{ (item.discount_price ?? item.actual_price).toFixed(2) }}</p>
+                <div v-else-if="orderHistory.length === 0" class="no-orders">
+                    <p>No Order History</p>
+                </div>
+            <div v-else class="order-list">
+                <div v-for="(order, orderIndex) in orderHistory" :key="orderIndex" class="order-box">
+                <h3>Order #{{ orderIndex + 1 }}</h3>
+                <div v-for="item in order" :key="item.id" class="order-item">
+                    <img :src="item.image" :alt="item.name" class="item-image" />
+                    <div class="item-details">
+                    <a :href="item.link" target="_blank">{{ item.name }}</a>
+                    <p>Price: ${{ (item.discount_price ?? item.actual_price).toFixed(2) }}</p>
+                    </div>
+                </div>
                 </div>
             </div>
             </div>
-        </div>
-        </div>
 
         <!-- Payment Methods -->
-        <div v-if="currentTab === 'Payment Methods'" class="payment-methods">
-            <div v-if="cards.length === 0">
-                <p>No Payment Methods on File</p>
-            </div>
-            <div v-else>
-                <div v-for="(card, index) in cards" :key="index" class="card-box">
-                    <p><strong>Card Holder:</strong> {{ card.cardHolder }}</p>
-                    <p><strong>Card Number:</strong> **** **** **** {{ card.cardNumber.slice(-4) }}</p>
-                    <p><strong>Expiry:</strong> {{ card.expiryDate }}</p>
+            <div v-if="currentTab === 'Payment Methods'" class="payment-methods">
+                <div v-if="cards.length === 0">
+                    <p>No Payment Methods on File</p>
                 </div>
+                <div v-else>
+                    <div v-for="(card, index) in cards" :key="index" class="card-box">
+                        <p><strong>Card Holder:</strong> {{ card.cardHolder }}</p>
+                        <p><strong>Card Number:</strong> **** **** **** {{ card.cardNumber.slice(-4) }}</p>
+                        <p><strong>Expiry:</strong> {{ card.expiryDate }}</p>
+                    </div>
             </div>
 
             <button @click="showCardForm = !showCardForm">

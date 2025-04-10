@@ -334,7 +334,7 @@
     {
         outline: none;
         border-color: #0077CA;
-        box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        box-shadow: 0 0 0 2px #0076caa1;
     }
 
     .error-message 
@@ -399,7 +399,7 @@
         }
 
         input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focus, select:focus {
-            box-shadow: 0 0 0 2px rgba(72,169,248,0.5);
+            box-shadow: 0 0 0 2px #47abf3a1;
         }
     }
 

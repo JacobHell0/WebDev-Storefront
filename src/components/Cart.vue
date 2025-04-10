@@ -61,9 +61,9 @@ const cartItems = ref([
 //     });
 // });
 
-// onUnmounted(() => {
-//     console.log('--- cart unmounted ---');
-// });
+onUnmounted(() => {
+    console.log('--- cart unmounted ---');
+});
 
 function thisWorks() {
     console.log("you clicked checkout")
