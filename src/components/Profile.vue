@@ -72,14 +72,31 @@
         <div v-if="currentTab === 'Order History'" class="order-history">
             <p>No orders to show</p>
         </div>
-        <!-- Payment methods -->
+
+        <!-- Payment Methods -->
         <div v-if="currentTab === 'Payment Methods'" class="payment-methods">
+            <div v-if="cards.length === 0">
             <p>No Payment Methods on File</p>
-            <button @click="addPaymentMethod">Add Payment Method</button>
-        </div>
-        <!-- Settings -->
-        <div v-if="currentTab === 'Settings'" class="settings">
-            <p>Add Settings Here</p>
+            </div>
+            <div v-else>
+            <div v-for="(card, index) in cards" :key="index" class="card-box">
+                <p><strong>Card Holder:</strong> {{ card.cardHolder }}</p>
+                <p><strong>Card Number:</strong> **** **** **** {{ card.cardNumber.slice(-4) }}</p>
+                <p><strong>Expiry:</strong> {{ card.expiryDate }}</p>
+            </div>
+            </div>
+
+            <button @click="showCardForm = !showCardForm">
+            {{ showCardForm ? 'Cancel' : 'Add Payment Method' }}
+            </button>
+
+            <div v-if="showCardForm" class="form-group" style="width: 100%; max-width: 400px;">
+                <input v-model="newCard.cardHolder" placeholder="Name on Card" />
+                <input v-model="newCard.cardNumber" placeholder="Card Number" />
+                <input v-model="newCard.expiryDate" placeholder="MM/YY" />
+                <input v-model="newCard.csv" placeholder="CSV" />
+            <button @click="saveCard">Save Card</button>
+            </div>
         </div>
     </div>
     </div>
@@ -88,177 +105,217 @@
   
 <script>
   import { getAuth, onAuthStateChanged } from 'firebase/auth';
-  import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+  import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, getDocs } from 'firebase/firestore';
   import { app } from '@/firebase';
   import { logoutUser } from '@/services/logoutService';
   import router from '@/router';
   
-  export default 
-  {
-      data() 
-      {
-          return {
-              user: null,
-              userDetails: {},
-              editableUserDetails: {},
-              errors: {},
-              editMode: false,
-              currentTab: 'Account Overview',
-              tabs: ['Account Overview', 'Order History', 'Payment Methods', 'Settings'],
-              countries: ['Canada', 'USA']
-          };
-      },
-      created() 
-      {
-          const auth = getAuth(app); //Get user auth
-          onAuthStateChanged(auth, async (user) => {
-              if (user) //Make sure they are authed
-              {
-                  this.user = user;
-                  await this.fetchUserDetails(user.uid);
-              } 
-              else //Otherwise return them to the login page
-              {
-                  router.push('/login');
-              }
-          });
-      },
-      methods: {
-          async fetchUserDetails(uid) //Get the users id
-          {
-              const db = getFirestore(app);
-              const docRef = doc(db, "users", uid);
-              const docSnap = await getDoc(docRef);
-      
-              if (docSnap.exists()) //Grab all thier info if they exist in the database
-              {
-                  this.userDetails = docSnap.data();
-                  this.editableUserDetails = JSON.parse(JSON.stringify(this.userDetails));
-                  this.updateProvinces();
-              } 
-              else //Otherwise log the error
-              {
-                  console.log("No user data found!");
-              }
-          },
-          editProfile() //Toggles edit
-          {
-              this.editMode = true;
-              this.editableUserDetails = JSON.parse(JSON.stringify(this.userDetails));
-              this.errors = {};
-          },
-          async saveProfile() //Save the information in fields
-          {
-              if (this.validateForm()) //Only proceed if the all information editted is still valid
-              {
-                  const db = getFirestore(app);
-                  const docRef = doc(db, "users", this.user.uid);
-                  try
-                  {
-                      await updateDoc(docRef, this.editableUserDetails);
-                      this.userDetails = JSON.parse(JSON.stringify(this.editableUserDetails));
-                      this.editMode = false; //Disable editting after save success
-                  } 
-                  catch (error) //Log the rror
-                  {
-                      console.error("Failed to update user details:", error);
-                  }
-              } 
-              else 
-              {
-                  console.error("Field validation failed!"); //Debug, validation failed
-              }
-          },
-          cancelEdit() //Functionality to cancel editting
-          {
-              this.editableUserDetails = JSON.parse(JSON.stringify(this.userDetails));
-              this.editMode = false;
-          },
-          logout() 
-          {
-              logoutUser().then(() => {
-                  router.push('/login');
-              }).catch(error => {
-                  console.error("Failed to logout", error);
-              });
-          },
-          validateField(field)  //Validation logic (same as the login)
-          {
-            if (field === 'email') 
+export default 
+{
+    data() 
+    {
+        return {
+            user: null,
+            userDetails: {},
+            editableUserDetails: {},
+            errors: {},
+            editMode: false,
+            currentTab: 'Account Overview',
+            tabs: ['Account Overview', 'Order History', 'Payment Methods'],
+            countries: ['Canada', 'USA'],
+
+            showCardForm: false,
+            newCard: {
+            cardHolder: '',
+            cardNumber: '',
+            expiryDate: '',
+            csv: ''
+            },
+            cards: [],
+        };
+    },
+    created() 
+    {
+        const auth = getAuth(app); //Get user auth
+        onAuthStateChanged(auth, async (user) => {
+            if (user) //Make sure they are authed
             {
-                this.errors.email = this.editableUserDetails.email && /@.*\.(com|ca|net)$/.test(this.editableUserDetails.email.trim()) ? '' : 'Invalid email address.';
+                this.user = user;
+                await this.fetchUserDetails(user.uid);
+                await this.fetchCards();
             } 
-            else if (field === 'firstName') 
+            else //Otherwise return them to the login page
             {
-                this.errors.firstName = this.editableUserDetails.firstName && /^[a-zA-Z]+$/.test(this.editableUserDetails.firstName.trim()) ? '' : 'First name must contain only letters.';
-            } 
-            else if (field === 'lastName') 
-            {
-                this.errors.lastName = this.editableUserDetails.lastName && /^[a-zA-Z]+$/.test(this.editableUserDetails.lastName.trim()) ? '' : 'Last name must contain only letters.';
-            } 
-            else if (field === 'address') 
-            {
-                this.errors.address = this.editableUserDetails.address && /^\d+\s[A-Za-z\s]+$/.test(this.editableUserDetails.address.trim()) ? '' : 'Address must start with numbers followed by the street name.';
-            } 
-            else if (field === 'city') 
-            {
-                this.errors.city = this.editableUserDetails.city && /^[a-zA-Z\s]+$/.test(this.editableUserDetails.city.trim()) ? '' : 'City must contain only letters.';
-            } 
-            else if (field === 'postalcode') 
-            {
-                this.errors.postalcode = this.editableUserDetails.postalcode && this.editableUserDetails.postalcode.trim().length > 4 ? '' : 'Postal/Zip Code must be at least 5 characters.';
-            } 
-            else if (field === 'province') 
-            {
-                this.errors.province = this.editableUserDetails.province.trim() ? '' : 'Please select a province or state.';
-            } 
-            else if (field === 'country') 
-            {
-                this.errors.country = this.editableUserDetails.country.trim() ? '' : 'Please select a country.';
-            } 
-            else if (field === 'telephone') 
-            {
-                this.errors.telephone = this.editableUserDetails.telephone && /^\d{10}$/.test(this.editableUserDetails.telephone.trim()) ? '' : 'Telephone must be 10 digits.';
+                router.push('/login');
             }
-          },
-          validateForm() //function to validate each field
-          {
-              this.validateField('email');
-              this.validateField('password');
-              this.validateField('firstName');
-              this.validateField('lastName');
-              this.validateField('address');
-              this.validateField('postalcode');
-              this.validateField('city');
-              this.validateField('province');
-              this.validateField('country');
-              this.validateField('telephone');
-              return Object.values(this.errors).every(error => !error);
-          },
-          updateProvinces() 
-          {
-            if (this.editableUserDetails.country === 'Canada')
+        });
+    },
+    methods: {
+        async fetchUserDetails(uid) //Get the users id
+        {
+            const db = getFirestore(app);
+            const docRef = doc(db, "users", uid);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) //Grab all thier info if they exist in the database
             {
-                this.provinces = ['Ontario', 'Quebec', 'Nova Scotia', 'New Brunswick', 'Manitoba', 'British Columbia', 'Prince Edward Island', 'Saskatchewan', 'Alberta', 'Newfoundland and Labrador'];
+                this.userDetails = docSnap.data();
+                this.editableUserDetails = JSON.parse(JSON.stringify(this.userDetails));
+                this.updateProvinces();
             } 
-            else if (this.editableUserDetails.country === 'USA') 
+            else //Otherwise log the error
             {
-                this.provinces = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
+                console.log("No user data found!");
+            }
+        },
+        async saveCard() //Function which saves the card to the database
+        {
+            const db = getFirestore(app);
+            const userId = this.user.uid;
+            const cardsRef = collection(db, 'users', userId, 'paymentCards');
+            try 
+            {
+                await addDoc(cardsRef, this.newCard);
+                this.newCard = { cardHolder: '', cardNumber: '', expiryDate: '', csv: ''};
+                this.showCardForm = false;
+                await this.fetchCards(); //Update the card list
             } 
-          }
-      },
-      watch: 
-      {
-        'editableUserDetails.country'(newVal) 
+            catch (err) 
+            {
+                console.error("Failed to save card:", err); //Debug error
+            }
+        },
+        async fetchCards() //Function to fetch the preexisting cards from the databse
+        {
+            const db = getFirestore(app);
+            const userId = this.user.uid;
+            const cardsRef = collection(db, 'users', userId, 'paymentCards');
+            try 
+            {
+                const querySnapshot = await getDocs(cardsRef);
+                this.cards = querySnapshot.docs.map(doc => doc.data());
+            } 
+            catch (error) 
+            {
+                console.error("Failed to fetch cards:", error); //Debug message
+            }
+        },
+        editProfile() //Toggles edit
+        {
+            this.editMode = true;
+            this.editableUserDetails = JSON.parse(JSON.stringify(this.userDetails));
+            this.errors = {};
+        },
+        async saveProfile() //Save the information in fields
+        {
+            if (this.validateForm()) //Only proceed if the all information editted is still valid
+            {
+                const db = getFirestore(app);
+                const docRef = doc(db, "users", this.user.uid);
+                try
+                {
+                    await updateDoc(docRef, this.editableUserDetails);
+                    this.userDetails = JSON.parse(JSON.stringify(this.editableUserDetails));
+                    this.editMode = false; //Disable editting after save success
+                } 
+                catch (error) //Log the rror
+                {
+                    console.error("Failed to update user details:", error);
+                }
+            } 
+            else 
+            {
+                console.error("Field validation failed!"); //Debug, validation failed
+            }
+        },
+        cancelEdit() //Functionality to cancel editting
+        {
+            this.editableUserDetails = JSON.parse(JSON.stringify(this.userDetails));
+            this.editMode = false;
+        },
+        logout() 
+        {
+            logoutUser().then(() => {
+                router.push('/login');
+            }).catch(error => {
+                console.error("Failed to logout", error);
+            });
+        },
+        validateField(field)  //Validation logic (same as the login)
+        {
+        if (field === 'email') 
+        {
+            this.errors.email = this.editableUserDetails.email && /@.*\.(com|ca|net)$/.test(this.editableUserDetails.email.trim()) ? '' : 'Invalid email address.';
+        } 
+        else if (field === 'firstName') 
+        {
+            this.errors.firstName = this.editableUserDetails.firstName && /^[a-zA-Z]+$/.test(this.editableUserDetails.firstName.trim()) ? '' : 'First name must contain only letters.';
+        } 
+        else if (field === 'lastName') 
+        {
+            this.errors.lastName = this.editableUserDetails.lastName && /^[a-zA-Z]+$/.test(this.editableUserDetails.lastName.trim()) ? '' : 'Last name must contain only letters.';
+        } 
+        else if (field === 'address') 
+        {
+            this.errors.address = this.editableUserDetails.address && /^\d+\s[A-Za-z\s]+$/.test(this.editableUserDetails.address.trim()) ? '' : 'Address must start with numbers followed by the street name.';
+        } 
+        else if (field === 'city') 
+        {
+            this.errors.city = this.editableUserDetails.city && /^[a-zA-Z\s]+$/.test(this.editableUserDetails.city.trim()) ? '' : 'City must contain only letters.';
+        } 
+        else if (field === 'postalcode') 
+        {
+            this.errors.postalcode = this.editableUserDetails.postalcode && this.editableUserDetails.postalcode.trim().length > 4 ? '' : 'Postal/Zip Code must be at least 5 characters.';
+        } 
+        else if (field === 'province') 
+        {
+            this.errors.province = this.editableUserDetails.province.trim() ? '' : 'Please select a province or state.';
+        } 
+        else if (field === 'country') 
+        {
+            this.errors.country = this.editableUserDetails.country.trim() ? '' : 'Please select a country.';
+        } 
+        else if (field === 'telephone') 
+        {
+            this.errors.telephone = this.editableUserDetails.telephone && /^\d{10}$/.test(this.editableUserDetails.telephone.trim()) ? '' : 'Telephone must be 10 digits.';
+        }
+        },
+        validateForm() //function to validate each field
+        {
+            this.validateField('email');
+            this.validateField('password');
+            this.validateField('firstName');
+            this.validateField('lastName');
+            this.validateField('address');
+            this.validateField('postalcode');
+            this.validateField('city');
+            this.validateField('province');
+            this.validateField('country');
+            this.validateField('telephone');
+            return Object.values(this.errors).every(error => !error);
+        },
+        updateProvinces() 
+        {
+        if (this.editableUserDetails.country === 'Canada')
+        {
+            this.provinces = ['Ontario', 'Quebec', 'Nova Scotia', 'New Brunswick', 'Manitoba', 'British Columbia', 'Prince Edward Island', 'Saskatchewan', 'Alberta', 'Newfoundland and Labrador'];
+        } 
+        else if (this.editableUserDetails.country === 'USA') 
+        {
+            this.provinces = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
+        } 
+        }
+    },
+    watch: 
+    {
+        'editableUserDetails.country'(newval) 
         {
             this.updateProvinces();
         }
-      }
-  };
+    }
+};
 </script>
   
-  
-
   
   
 <style scoped>
@@ -427,13 +484,13 @@
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;  
-        font-size: 32px;
+        font-size: 28px;
         font-weight: bold;
     }
 
     .payment-methods > * {
         margin-top: 20px; 
-        border: 1px solid #ccc; 
+        border: 2px solid #0259a5; 
         padding: 10px; 
         width: 80%; 
         box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
@@ -450,19 +507,15 @@
         margin-top: 0; 
     }
 
-
-    .settings 
+    .card-box 
     {
-        width: 100%; 
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 80%; 
-        font-size: 32px;
-        font-weight: bold;
+        margin-top: 10px;
+        padding-bottom: 10px;
+        border: 4px solid #33d10b;
+        border-radius: 5px;
+        width: 80%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-
 </style>
   
   
