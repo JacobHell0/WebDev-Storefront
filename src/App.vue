@@ -35,7 +35,7 @@ onMounted(() => {
           <ul>
             <li><RouterLink to="/">Home</RouterLink></li>
             <li><RouterLink to="/cart">Cart</RouterLink></li>
-            <li><RouterLink to="/hello-from-server">Server Test (Debug)</RouterLink></li>
+            <li><RouterLink to="/status">Server Test (Debug)</RouterLink></li>
             <!-- Show Login link only if NOT logged in -->
             <li><RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink></li>
             <!-- Show Profile link ONLY IF LOGGED IN -->

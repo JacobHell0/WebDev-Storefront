@@ -42,7 +42,7 @@
                         <option value="Canada">Canada</option>
                         <option value="USA">USA</option>
                     </select>
-                    <span v-if="errors.country" class="error-message">Please select a country.</span>
+                    <span v-if="errors.country" class="error-message">Please select a country</span>
                 </div>
                 <div class="form-group">
                     <label for="province">Province/State:</label>
@@ -50,19 +50,25 @@
                         <option value="" disabled>Select Province/State</option>
                         <option v-for="province in provinces" :key="province" :value="province">{{ province }}</option>
                     </select>
-                    <span v-if="errors.province" class="error-message">Please select a province or state.</span>
+                    <span v-if="errors.province" class="error-message">Please select a province or state</span>
                 </div>
                 <div class="form-group">
                     <label for="city">City:</label>
                     <input type="text" id="city" v-model="userDetails.city" :class="{'input-error': errors.city}" required>
-                    <span v-if="errors.city" class="error-message">City must contain only characters.</span>
+                    <span v-if="errors.city" class="error-message">City must contain only characters</span>
+                </div>
+                <div class="form-group">
+                    <label for="postalcode">Postal Code:</label>
+                    <input type="text" id="postalcode" v-model="userDetails.postalcode" :class="{'input-error': errors.postalcode}" required>
+                    <span v-if="errors.city" class="error-message">Must be atleast 5 characters</span>
                 </div>
                 <div class="form-group">
                     <label for="telephone">Telephone:</label>
                     <input type="text" id="telephone" v-model="userDetails.telephone" :class="{'input-error': errors.telephone}" required>
-                    <span v-if="errors.telephone" class="error-message">Telephone must be numerical and 10 digits long.</span>
+                    <span v-if="errors.telephone" class="error-message">Telephone must be numerical and 10 digits long</span>
                 </div>
             </div>
+            <!-- Buttons -->
             <div class="button-group">
                 <button type="submit" class="left-button">{{ isLogin ? 'Login' : 'Sign Up' }}</button>
                 <button @click="toggleForm" type="button" class="right-button">{{ isLogin ? 'Sign up' : 'Return to Login' }}</button>
@@ -95,6 +101,7 @@
             email: '',
             password: '',
             address: '',
+            postalcode: '',
             city: '', 
             province: '',
             country: '',
@@ -106,6 +113,7 @@
             email: '',
             password: '',
             address: '',
+            postalcode: '',
             city: '', 
             province: '',
             country: '',
@@ -157,6 +165,10 @@
             {
                 this.errors.city = this.userDetails.city && /^[a-zA-Z\s]+$/.test(this.userDetails.city) ? '' : 'City must contain only letters.';
             } 
+            else if (field === 'postalcode') 
+            {
+                this.errors.city = this.userDetails.postalcode && this.userDetails.postalcode.length > 4 ? '' : 'Postal/Zip Code must be at least 5 characters.';
+            }
             else if (field === 'province') 
             {
                 this.errors.province = this.userDetails.province ? '' : 'Please select a province or state.';
@@ -180,6 +192,7 @@
                 this.validateField('firstName');
                 this.validateField('lastName');
                 this.validateField('address');
+                this.validateField('postalcode'); 
                 this.validateField('city'); 
                 this.validateField('province');
                 this.validateField('country');
@@ -235,6 +248,7 @@
                     firstName: this.userDetails.firstName,
                     lastName: this.userDetails.lastName,
                     address: this.userDetails.address,
+                    postalcode: this.userDetails.postalcode,
                     city: this.userDetails.city,
                     province: this.userDetails.province,
                     country: this.userDetails.country,
@@ -276,13 +290,13 @@
 <style scoped>
     .login-container 
     {
-        width: 60%;  
+        width: 60%;
         max-width: 350px;
-        margin: 50px auto; 
-        padding: 20px;   
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin: 50px auto;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        background-color: #fff;
     }
 
     .center-text 
@@ -292,29 +306,40 @@
 
     .form-group 
     {
-        margin-bottom: 15px;
+        margin-bottom: 20px;
         position: relative;
     }
 
     label 
     {
         display: block;
-        margin-bottom: 5px;
+        margin-bottom: 10px;
+        font-size: 1em;
+        color: #333;
     }
 
     input[type="email"], input[type="password"], input[type="text"], select 
     {
         width: 100%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        background-color: #fff;
+        padding: 12px;
+        border: 2px solid #0077CA;
+        border-radius: 8px;
+        background-color: transparent;
+        font-size: 1em;
+        color: #333;
+    }
+
+    input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focus, select:focus 
+    {
+        outline: none;
+        border-color: #0077CA;
+        box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
     }
 
     .error-message 
     {
-        color: red;
-        font-size: 0.8em;
+        color: #ff0000;
+        font-size: 0.85em;
         margin-top: 2px;
         display: block;
     }
@@ -331,7 +356,7 @@
         flex: 1;
         margin: 0 5px;
         padding: 10px 0;
-        background-color: #4CAF50;
+        background-color: #0077CA;
         color: white;
         border: none;
         border-radius: 5px;
@@ -341,12 +366,12 @@
 
     .left-button:hover, .right-button:hover 
     {
-        background-color: #45a049;
+        background-color: #E75D2A; 
     }
 
     .left-button:active, .right-button:active 
     {
-        background-color: #397d34;
+        background-color: #b14720; 
     }
 
     .general-error 
@@ -354,4 +379,40 @@
         text-align: center;
         margin-top: 10px;
     }
+
+    /*Dark mode*/
+    @media (prefers-color-scheme: dark) 
+    {
+        .login-container 
+        {
+            border-color: #0077CA; 
+            background-color: #222; 
+        }
+
+        label, input[type="email"], input[type="password"], input[type="text"], select {
+            color: #ddd;
+        }
+
+        input[type="email"], input[type="password"], input[type="text"], select {
+            border-color: #0077CA;
+        }
+
+        input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focus, select:focus {
+            box-shadow: 0 0 0 2px rgba(72,169,248,0.5);
+        }
+    }
+
+    /*screen size adjustment*/
+    @media (min-width: 900px) 
+    {
+        .login-container 
+        {
+            max-width: 500px; 
+            padding: 30px; 
+        }
+    }
 </style>
+
+
+
+

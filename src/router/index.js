@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 // import Cart from '../views/Cart.vue';
-import HelloFromServer from '@/components/HelloFromServer.vue'
+import ServerStatus from '@/components/ServerStatus.vue'
 import Login from '../components/Login.vue';
 import Profile from '../components/Profile.vue'; 
 
@@ -19,9 +19,9 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue'),
     },
     {
-      path: '/hello-from-server',
-      name: 'HelloFromServer',
-      component: HelloFromServer
+      path: '/status',
+      name: 'ServerStatus',
+      component: ServerStatus
     },
     {
       path: '/login',
