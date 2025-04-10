@@ -64,10 +64,15 @@
         //                         "jacob.h3ll0@gmail.com", "Subject!", "MY MESSAGE").then(response => {
         //     console.log(response);
         // });
-        let jsonData = await apiServices.getByQuery("laptop");
-        jsonData[0].count = 2;
-        apiServices.putItemInCart("5XKz7uJJioNpCgGHqdQ3w164JyN2", jsonData);
-
+        // let jsonData = await apiServices.getByQuery("laptop");
+        // jsonData[0].count = 2;
+        // apiServices.putItemInCart("5XKz7uJJioNpCgGHqdQ3w164JyN2", jsonData);
+        // apiServices.getCartItems("5XKz7uJJioNpCgGHqdQ3w164JyN2").then(response => {
+        //     console.log(response);
+        // });
+        apiServices.deleteCart("5XKz7uJJioNpCgGHqdQ3w164JyN2").then(response => {
+            console.log(response);
+        });
       }
     }
   };
