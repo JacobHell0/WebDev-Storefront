@@ -454,10 +454,9 @@ app.delete('/api/cart/delete/:userid/:productid', async (req, res) => {
             const data = snapshot.data();
             console.log(data);
             for(let entry of data.productIds) {
-                console.log("test: ", entry);
+                // console.log("test: ", entry);
                 if(entry.id === productid) {
-                    // Update the document in Firestore
-                    // Delete the product ID here
+                    //delete item, remove it from the array then tell firebase about the update
                     data.productIds.splice(data.productIds.indexOf(entry), 1); //remove product
                     snapshot.ref.update({ productIds: data.productIds });
                     break;
@@ -465,13 +464,9 @@ app.delete('/api/cart/delete/:userid/:productid', async (req, res) => {
             }
         });
 
-        // Log or return the collected product IDs
-        console.log("All product IDs:", allProductIDs);
-
-
-        res.status(200).send('All carts deleted successfully');
+        res.status(200).send('deleted item successfully');
     } catch (error) {
-        console.error('Error deleting carts: ', error);
+        console.error('Error deleting item from cart: ', error);
         res.status(500).send('Error deleting carts');
     }
 });
