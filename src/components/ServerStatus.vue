@@ -38,9 +38,20 @@
           // apiServices.getSortedByRating().then(response => {
           //   console.log(response);
           // });
-          apiServices.getByCategory().then(response => {
+
+          // apiServices.getByCategory("grocery & gourmet foods").then(response => {
+          //   let jsonData = response;
+          //   // console.log("calling backend with:");
+          //   // console.log(jsonData);
+          //   apiServices.putOrderHistory(jsonData, "5XKz7uJJioNpCgGHqdQ3w164JyN2 ").then(response => {
+          //     console.log(response);
+          //   });
+          // });
+
+          apiServices.getOrderHistory("5XKz7uJJioNpCgGHqdQ3w164JyN2").then(response => {
             console.log(response);
           });
+
 
       }
     }

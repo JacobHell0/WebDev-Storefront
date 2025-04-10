@@ -26,7 +26,7 @@ export default //CURRENTLY ALL JUST DEBUG REQUESTS
     },
     getServerStatus()
     {
-        return apiClient.get('/status')
+        return apiClient.get('/server-status')
     },
     getProduct(productId) {
         return apiClient.get(`/products/${productId}`)
@@ -44,11 +44,33 @@ export default //CURRENTLY ALL JUST DEBUG REQUESTS
                 throw error;
             });
     },
-    getByCategory() {
-        return apiClient.get('category')
+    getByCategory(cat) {
+        return apiClient.get(`category/${cat}`)
             .then(response => response.data)
             .catch(error => {
                 console.error('Error fetching products by category:', error);
+                throw error;
+            });
+    },
+    putOrderHistory(jsonData, userid) {
+        let properJsonData = {
+            "jsonData": jsonData
+        }
+
+        // console.log(JSON.stringify(properJsonData));
+
+        return apiClient.put(`/order/put/${userid}`, properJsonData)
+            .then(response => response.data)
+            .catch(error => {
+                console.error('Error putting order in the database', error)
+                throw error;
+            });
+    },
+    getOrderHistory(userid) {
+        return apiClient.get(`order/get/${userid}`)
+            .then(response => response.data)
+            .catch(error => {
+                console.error('Error getting order history', error)
                 throw error;
             });
     },

@@ -139,3 +139,102 @@ Expected Response
   }
 ]
 ```
+
+### `http://localhost:3000/api/order/put/firebase_user_id_goes_here`
+This endpoint will accept a list of json objects, it then stores it in the database.
+The endpoint returns data in this format, just in case you need it:
+```js
+return res.status(201).json({
+    message: 'Order added to user history',
+    orderId: orderDocRef.id, //reference to firebase doc
+    data: newOrder //data you pushed into the data base, newORder is a list of product ids
+});
+```
+
+Example request through axios (I wrapped it with getByCategory to have some test data)
+As long as the jsonData is in the format `[{jsondata},{jsondata},{jsondata}]` it will work.
+```js
+apiServices.getByCategory("grocery & gourmet foods").then(response => {
+    let jsonData = response;
+
+    apiServices.putOrderHistory(jsonData, "5XKz7uJJioNpCgGHqdQ3w164JyN2 ").then(response => {
+        console.log(response);
+    });
+});
+```
+
+Expected Response (I just took the console.log(response))
+```js
+Object { message: "Order added to user history", orderId: "MwZctNhNt1jr5CxWpiie", data: {…} }
+data: Object { productIds: (3) […] }
+message: "Order added to user history"
+orderId: "MwZctNhNt1jr5CxWpiie"
+```
+
+### `http://localhost:3000/api/order/get/firebase_user_id_goes_here`
+This endpoint will accept a user id and return that user's orders as json data.
+
+Example request through axios
+```js
+apiServices.getOrderHistory("5XKz7uJJioNpCgGHqdQ3w164JyN2").then(response => {
+    console.log(response);
+});
+```
+
+Expected Response, also here's the format `[[json data], [json data]]`.
+```js
+[
+  [
+    {
+      "name": "Sugar Free Green Natural Stevia Jar(200 g)",
+      "main_category": "grocery & gourmet foods",
+      "sub_category": "All Grocery & Gourmet Foods",
+      "image": "https://m.media-amazon.com/images/I/61rBhkTJ6EL._AC_UL320_.jpg",
+      "link": "https://www.amazon.in/Sugarfree-Green-100-Natural-Stevia/dp/B082TC6KL9/ref=sr_1_699?qid=1679216185&s=grocery&sr=1-699",
+      "ratings": 4.3,
+      "no_of_ratings": 1,
+      "discount_price": 2.592,
+      "actual_price": 2.72,
+      "id": "4V5WWqlflRrTHLdVF4oi"
+    },
+    {
+      "name": "Nutraj 100% Natural Dried Premium California Walnut Kernels, 500g (2 X 250g) | Pure Without Shell Walnut Kernels | Akhrot ...",
+      "main_category": "grocery & gourmet foods",
+      "sub_category": "All Grocery & Gourmet Foods",
+      "image": "https://m.media-amazon.com/images/I/71f5UPOWDqL._AC_UL320_.jpg",
+      "link": "https://www.amazon.in/Nutraj-California-Walnut-Kernels-500g/dp/B07P56M78L/ref=sr_1_697?qid=1679216185&s=grocery&sr=1-697",
+      "ratings": 3.9,
+      "no_of_ratings": 6,
+      "discount_price": 10.976,
+      "actual_price": 15.968,
+      "id": "Jicr6FEDLqSSMFs4eX6p"
+    }
+  ],
+  [
+    {
+      "name": "Cadbury Bournvita 5 Star Magic Health Drink, 750g Pouch",
+      "main_category": "grocery & gourmet foods",
+      "sub_category": "All Grocery & Gourmet Foods",
+      "image": "https://m.media-amazon.com/images/I/614FIW5c6HL._AC_UL320_.jpg",
+      "link": "https://www.amazon.in/Bournvita-Magic-Chocolate-Health-Refill/dp/B07BFQHW2Z/ref=sr_1_698?qid=1679216185&s=grocery&sr=1-698",
+      "ratings": 4.3,
+      "no_of_ratings": 8,
+      "discount_price": null,
+      "actual_price": 5.648,
+      "id": "0tkG5F1OrCSIG9zi8AjH"
+    },
+    {
+      "name": "Sugar Free Green Natural Stevia Jar(200 g)",
+      "main_category": "grocery & gourmet foods",
+      "sub_category": "All Grocery & Gourmet Foods",
+      "image": "https://m.media-amazon.com/images/I/61rBhkTJ6EL._AC_UL320_.jpg",
+      "link": "https://www.amazon.in/Sugarfree-Green-100-Natural-Stevia/dp/B082TC6KL9/ref=sr_1_699?qid=1679216185&s=grocery&sr=1-699",
+      "ratings": 4.3,
+      "no_of_ratings": 1,
+      "discount_price": 2.592,
+      "actual_price": 2.72,
+      "id": "4V5WWqlflRrTHLdVF4oi"
+    },
+  ],
+]
+```
