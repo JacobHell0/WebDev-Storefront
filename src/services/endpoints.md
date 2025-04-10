@@ -21,6 +21,9 @@ apiServices.getProduct('4V5WWqlflRrTHLdVF4oi')
   });
 ```
 
+## Secrets
+Place the secrets file: `capjas-webstore-firebase-adminsdk.json` into `secrets/capjas-webstore-firebase-adminsdk.json`
+
 ## Fetch Data From The Database
 
 ### `/api/products/your_product_ID_here`
