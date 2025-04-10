@@ -1,12 +1,9 @@
-<!-- Modified to allow login and check login status. If a profile is logged in, it can view profile if, if not, it can choose login -->
-
 <script setup>
 import { RouterLink, RouterView } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import Logo from './components/Logo.vue';
 
-//Check the status of user authentication
 const isLoggedIn = ref(false);
 onMounted(() => {
   const auth = getAuth();
@@ -14,16 +11,15 @@ onMounted(() => {
     isLoggedIn.value = !!user;
   });
 });
-
 </script>
+
 <template>
   <main class="full-page">
     <header>
       <div class="header-container">
-        <!-- Logo/Site Name -->
+        <!-- Logo -->
         <div class="header-name-logo">
-          <Logo class ="logo"/>
-          <h1></h1>
+          <Logo class="logo-svg" />
         </div>
 
         <!-- Search Bar -->
@@ -32,14 +28,12 @@ onMounted(() => {
         </div>
 
         <!-- Navbar -->
-        <nav>
+        <nav class="header-nav">
           <ul>
             <li><RouterLink to="/">Home</RouterLink></li>
             <li><RouterLink to="/cart">Cart</RouterLink></li>
             <li><RouterLink to="/status">Server Test (Debug)</RouterLink></li>
-            <!-- Show Login link only if NOT logged in -->
             <li><RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink></li>
-            <!-- Show Profile link ONLY IF LOGGED IN -->
             <li><RouterLink v-if="isLoggedIn" to="/profile">Profile</RouterLink></li>
           </ul>
         </nav>
@@ -52,13 +46,12 @@ onMounted(() => {
 
     <footer>
       <div class="footer-container">
-          <RouterLink to="/about">About</RouterLink>
-          <span> | </span>
-          <RouterLink to="/contact">Contact</RouterLink>
+        <RouterLink to="/about">About</RouterLink>
+        <span> | </span>
+        <RouterLink to="/contact">Contact</RouterLink>
       </div>
     </footer>
   </main>
-
 </template>
 
 <style>
@@ -97,28 +90,26 @@ header {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  min-width: auto ;
+  width: 100%;
+  gap: 1rem;
 }
 
 .header-name-logo {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
 }
 
-.logo {
-  width: 40px;
-  height: 40px;
-}
-
-h1 {
-  font-size: 24px;
+.logo-svg {
+  width: 60px;
+  height: auto;
+  position: absolute;
+  top: -10px;
 }
 
 .search-bar-container {
-  justify-self: center;
   width: 100%;
-  max-width: 300px;
+  max-width: 400px;
+  justify-self: center;
 }
 
 .search-bar-container input {
@@ -152,7 +143,6 @@ nav a.router-link-exact-active {
   background-color: #E75D2A;
 }
 
-/* Footer Styling */
 footer {
   background-color: #003C71;
   color: white;
@@ -168,7 +158,6 @@ footer {
   align-items: center;
   width: 100%;
   gap: 0.5rem;
-  min-width: auto;
 }
 
 .footer-container a {
@@ -180,10 +169,10 @@ footer {
   text-decoration: underline;
 }
 
-.content{
+.content {
   flex: 1;
   overflow-y: auto;
-  padding-top: 71.99px;
+  padding-top: 72px;
   width: 100%;
   box-sizing: border-box;
 }
