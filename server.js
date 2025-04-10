@@ -5,6 +5,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import cors from 'cors';
+// const algoliasearch = require('algoliasearch');
+import { algoliasearch } from 'algoliasearch';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -235,32 +237,42 @@ app.get('/api/order/get/:userid', async (req, res) => {
     }
 });
 
+
 app.get('/api/search/:query', async (req, res) => {
     const { query } = req.params;
-    console.log(`querying: ${query}`)
+    console.log(`querying: ${query}`);
 
-    try {
-        const firebaseQuery = await
-        db.collection("products")      //\uf8ff is a very high unicode character so
-            .orderBy("lowercase_name") //if query was lap, the special character would
-            .startAt(`${query}`)       //essentially look like this: lap******* meaning
-            .endAt(`${query}\uf8ff`)   //the query would return anything starting with lap
-            .get()                     //like laptop, laptops, etc.
-                                       //unfortunately this is the best option because
-                                       //firebase doesn't support searching without
-                                       //paying for the blaze tier.
+    const searchClient = algoliasearch('FQ67AYU0IJ', '896ab150949b98a3dcca2001629d2d48');
 
-        const results = firebaseQuery.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
-        console.log(`returning ${results.length} results`);
-        return res.status(200).json(results);
+    // make search on products
+    searchClient
+        .search({
+            requests: [
+            {
+                indexName: 'products',
+                query: query,
+            }],
+        })
+        .then(async ({ results }) => {
 
-    } catch (error) {
-        console.error(`Error fetching query: ${query}, error: ${error}`);
-        return res.status(500).json({message: 'Internal server error'});
-    }
+            let jsonData = [];
+            for(let item of results[0].hits) {
+                let path = item.path;
+                path = path.replace("products/", "");
+                let doc = await getProductById(path).then();
+                let newJson = doc.data();
+                newJson.id = path;
+                jsonData.push(newJson);
+            }
+
+            // console.log(jsonData);
+            console.log(`returning ${jsonData.length} results`);
+
+            return res.status(200).json(jsonData);
+        })
+        .catch(err => {
+            console.error(err);
+        });
 
 });
 
