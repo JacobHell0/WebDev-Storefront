@@ -23,82 +23,25 @@ app.get('/api/server-status', (req, res) => {
 
 ///////////////////////////// Unique Categories  /////////////////////////////
 const UNIQUE_CATEGORIES = [
-    'appliances',
-    'tv, audio & cameras',
-    'sports & fitness',
-    'grocery & gourmet foods',
-    'home & kitchen',
-    'pet supplies',
-    'stores',
-    'appliances',
-    'toys & baby products',
-    "kids' fashion",
-    'bags & luggage',
-    'sports & fitness',
-    'beauty & health',
-    'tv, audio & cameras',
-    'tv, audio & cameras',
-    'car & motorbike',
-    'car & motorbike',
-    'car & motorbike',
-    'car & motorbike',
-    'sports & fitness',
-    "men's shoes",
-    'grocery & gourmet foods',
-    'toys & baby products',
-    'beauty & health',
-    'pet supplies',
-    "women's clothing",
-    'stores',
-    "women's shoes",
-    'sports & fitness',
     'accessories',
-    'tv, audio & cameras',
-    'beauty & health',
     'appliances',
-    'home & kitchen',
-    'tv, audio & cameras',
-    'home & kitchen',
-    'home & kitchen',
+    'bags & luggage',
     'beauty & health',
+    'car & motorbike',
+    'grocery & gourmet foods',
     'home & kitchen',
-    'industrial supplies',
-    "men's clothing",
-    "kids' fashion",
-    "kids' fashion",
-    "kids' fashion",
-    'home & kitchen',
-    'appliances',
-    'home & kitchen',
-    'industrial supplies',
-    "women's clothing",
-    'beauty & health',
-    'beauty & health',
-    'stores',
-    'appliances',
     'home, kitchen, pets',
-    'bags & luggage',
-    'sports & fitness',
-    'tv, audio & cameras',
-    "men's clothing",
-    "women's shoes",
-    'grocery & gourmet foods',
-    'tv, audio & cameras',
-    "men's shoes",
-    'stores',
-    'sports & fitness',
-    'toys & baby products',
-    'bags & luggage',
-    'accessories',
-    "men's clothing",
     'industrial supplies',
+    "kids' fashion",
+    "men's clothing",
+    "men's shoes",
+    'pet supplies',
+    'sports & fitness',
+    'stores',
     'toys & baby products',
-    'toys & baby products',
-    'bags & luggage',
-    'beauty & health',
-    'appliances',
+    'tv, audio & cameras',
     "women's clothing",
-    'sports & fitness'
+    "women's shoes"
 ];
 
 
@@ -325,6 +268,11 @@ app.get('/api/search/:query', async (req, res) => {
 app.get('/api/get/main-categories', async (req, res) => {
     // this endpoint will return the UNIQUE_CATEGORIES list
     console.log("returning unique categories");
+    // let uniq = [new Set(UNIQUE_CATEGORIES)];
+    // uniq.sort();
+    // let uniq = UNIQUE_CATEGORIES;
+    // uniq.sort();
+    // console.log(uniq);
     return res.send(UNIQUE_CATEGORIES);
 });
 
