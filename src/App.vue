@@ -77,17 +77,13 @@ const searchPlaceholder = computed(() =>
         </div>
 
         <!-- Navbar -->
-        <nav>
-          <ul>
-            <li><RouterLink to="/">Home</RouterLink></li>
-            <li><RouterLink to="/cart">Cart</RouterLink></li>
-            <li><RouterLink to="/status">Server Test (Debug)</RouterLink></li>
-            <!-- Show Login link only if NOT logged in -->
-            <li><RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink></li>
-            <!-- Show Profile link ONLY IF LOGGED IN -->
-            <li><RouterLink v-if="isLoggedIn" to="/profile">Profile</RouterLink></li>
-          </ul>
+        <nav class="nav-buttons">
+          <RouterLink to="/" class="nav-pill" exact-active-class="active">Home</RouterLink>
+          <RouterLink to="/cart" class="nav-pill" exact-active-class="active">Cart</RouterLink>
+          <RouterLink v-if="isLoggedIn" to="/profile" class="nav-pill" exact-active-class="active">Profile</RouterLink>
+          <RouterLink v-else to="/login" class="nav-pill">Login</RouterLink>
         </nav>
+
       </div>
     </header>
 
@@ -206,30 +202,33 @@ h1 {
 
 
 
-.header-nav {
-  justify-self: end;
-}
-
-nav ul {
+.nav-buttons {
   display: flex;
-  gap: 16px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  gap: 1rem;
+  justify-content: flex-end;
+  align-items: center;
 }
 
-nav a {
-  color: white;
-  padding: 8px 16px;
+.nav-pill {
+  background-color: white;
+  color: #003C71;
+  padding: 8px 18px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s, color 0.3s;
 }
 
-nav a:hover {
-  text-decoration: underline;
+.nav-pill:hover {
+  background-color: #E5F3FF;
+  color: #005fa3;
 }
 
-nav a.router-link-exact-active {
+.nav-pill.active {
   background-color: #E75D2A;
+  color: white;
 }
+
 
 /* Footer Styling */
 footer {
