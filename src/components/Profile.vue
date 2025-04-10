@@ -15,35 +15,51 @@
             <div class="profile-container">
             <h1>Profile Details</h1>
             <div v-if="editMode">
-            <p><strong>First Name:</strong> <input v-model="editableUserDetails.firstName" />
-            <span class="error" v-if="errors.firstName">{{ errors.firstName }}</span></p>
-            <p><strong>Last Name:</strong> <input v-model="editableUserDetails.lastName" />
-            <span class="error" v-if="errors.lastName">{{ errors.lastName }}</span></p>
-            <p><strong>Email:</strong> <input v-model="editableUserDetails.email" />
-            <span class="error" v-if="errors.email">{{ errors.email }}</span></p>
-            <p><strong>Address:</strong> <input v-model="editableUserDetails.address" />
-            <span class="error" v-if="errors.address">{{ errors.address }}</span></p>
-            <p><strong>Postal Code:</strong> <input v-model="editableUserDetails.postalcode" />
-            <span class="error" v-if="errors.postalcode">{{ errors.postalcode }}</span></p>
-            <p><strong>City:</strong> <input v-model="editableUserDetails.city" />
-            <span class="error" v-if="errors.city">{{ errors.city }}</span></p>
-            <p><strong>Province/State:</strong> <input v-model="editableUserDetails.province" />
-            <span class="error" v-if="errors.province">{{ errors.province }}</span></p>
-            <p><strong>Country:</strong> <input v-model="editableUserDetails.country" />
-            <span class="error" v-if="errors.country">{{ errors.country }}</span></p>
-            <p><strong>Telephone:</strong> <input v-model="editableUserDetails.telephone" />
-            <span class="error" v-if="errors.telephone">{{ errors.telephone }}</span></p>
+                <p><strong>First Name:</strong> <input v-model="editableUserDetails.firstName" />
+                <span class="error" v-if="errors.firstName">{{ errors.firstName }}</span></p>
+                <p><strong>Last Name:</strong> <input v-model="editableUserDetails.lastName" />
+                <span class="error" v-if="errors.lastName">{{ errors.lastName }}</span></p>
+                <p><strong>Email:</strong> <input v-model="editableUserDetails.email" />
+                <span class="error" v-if="errors.email">{{ errors.email }}</span></p>
+                <p><strong>Address:</strong> <input v-model="editableUserDetails.address" />
+                <span class="error" v-if="errors.address">{{ errors.address }}</span></p>
+                <p><strong>Postal Code:</strong> <input v-model="editableUserDetails.postalcode" />
+                <span class="error" v-if="errors.postalcode">{{ errors.postalcode }}</span></p>
+                <p><strong>City:</strong> <input v-model="editableUserDetails.city" />
+                <span class="error" v-if="errors.city">{{ errors.city }}</span></p>
+                
+                <div class="form-group">
+                    <label for="province">Province/State:</label>
+                    <select id="province" v-model="editableUserDetails.province" required>
+                        <option value="">Select Province/State</option>
+                        <option v-for="province in provinces" :key="province" :value="province">{{ province }}</option>
+                    </select>
+                    <span class="error" v-if="errors.province">{{ errors.province }}</span>
+                </div>
+
+                <!-- Dropdown for Country -->
+                <div class="form-group">
+                    <label for="country">Country:</label>
+                    <select id="country" v-model="editableUserDetails.country" @change="updateProvinces" required>
+                        <option value="">Select Country</option>
+                        <option value="Canada">Canada</option>
+                        <option value="USA">USA</option>
+                    </select>
+                    <span class="error" v-if="errors.country">{{ errors.country }}</span>
+                </div>
+                <p><strong>Telephone:</strong> <input v-model="editableUserDetails.telephone" />
+                <span class="error" v-if="errors.telephone">{{ errors.telephone }}</span></p>
             </div>
             <div v-else>
-            <p><strong>First Name:</strong> {{ userDetails.firstName }}</p>
-            <p><strong>Last Name:</strong> {{ userDetails.lastName }}</p>
-            <p><strong>Email:</strong> {{ userDetails.email }}</p>
-            <p><strong>Address:</strong> {{ userDetails.address }}</p>
-            <p><strong>Postal Code:</strong> {{ userDetails.postalcode }}</p>
-            <p><strong>City:</strong> {{ userDetails.city }}</p>
-            <p><strong>Province/State:</strong> {{ userDetails.province }}</p>
-            <p><strong>Country:</strong> {{ userDetails.country }}</p>
-            <p><strong>Telephone:</strong> {{ userDetails.telephone }}</p>
+                <p><strong>First Name:</strong> {{ userDetails.firstName }}</p>
+                <p><strong>Last Name:</strong> {{ userDetails.lastName }}</p>
+                <p><strong>Email:</strong> {{ userDetails.email }}</p>
+                <p><strong>Address:</strong> {{ userDetails.address }}</p>
+                <p><strong>Postal Code:</strong> {{ userDetails.postalcode }}</p>
+                <p><strong>City:</strong> {{ userDetails.city }}</p>
+                <p><strong>Province/State:</strong> {{ userDetails.province }}</p>
+                <p><strong>Country:</strong> {{ userDetails.country }}</p>
+                <p><strong>Telephone:</strong> {{ userDetails.telephone }}</p>
             </div>
             <div class="button-group">
                 <button v-if="editMode" @click="saveProfile">Save</button>
@@ -88,7 +104,8 @@
               errors: {},
               editMode: false,
               currentTab: 'Account Overview',
-              tabs: ['Account Overview', 'Order History', 'Payment Methods', 'Settings']
+              tabs: ['Account Overview', 'Order History', 'Payment Methods', 'Settings'],
+              countries: ['Canada', 'USA']
           };
       },
       created() 
@@ -117,6 +134,7 @@
               {
                   this.userDetails = docSnap.data();
                   this.editableUserDetails = JSON.parse(JSON.stringify(this.userDetails));
+                  this.updateProvinces();
               } 
               else //Otherwise log the error
               {
@@ -216,6 +234,17 @@
               this.validateField('country');
               this.validateField('telephone');
               return Object.values(this.errors).every(error => !error);
+          },
+          updateProvinces() 
+          {
+            if (this.editableUserDetails.country === 'Canada')
+            {
+                this.provinces = ['Ontario', 'Quebec', 'Nova Scotia', 'New Brunswick', 'Manitoba', 'British Columbia', 'Prince Edward Island', 'Saskatchewan', 'Alberta', 'Newfoundland and Labrador'];
+            } 
+            else if (this.editableUserDetails.country === 'USA') 
+            {
+                this.provinces = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
+            } 
           }
       }
   };
@@ -289,11 +318,10 @@
         height: 100%;
     }
 
-    .profile-container 
-    {
+    .profile-container {
         width: 100%;
         flex-grow: 1;
-        font-size: 16px; 
+        font-size: 16px;
         border: 1px solid #ccc;
         padding: 20px;
         box-sizing: border-box;
@@ -301,22 +329,30 @@
         border-radius: 5px;
     }
 
-    .profile-container h1 
-    {
-        margin-bottom: 24px; 
+    .profile-container h1 {
+        margin-bottom: 24px;
         font-weight: bold;
         font-size: 32px;
     }
 
-    .profile-container p 
+    .profile-container p, .profile-container .form-group 
     {
-        margin-bottom: 24px; 
-        font-size: inherit; 
+        margin-bottom: 24px;
+        font-size: inherit;
     }
 
-    .profile-container p strong 
+    .profile-container p strong, .profile-container .form-group label 
     {
-        font-weight: bold; 
+        font-weight: bold;
+    }
+
+    .profile-container input[type="text"], .profile-container select 
+    {
+
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
     }
 
 
