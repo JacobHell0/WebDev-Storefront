@@ -83,7 +83,7 @@ function thisWorks() {
     </div>
 </template>
 
-<style>
+<style scoped>
 #page {
     display: grid;
     grid-template-columns: 60% 40%;
@@ -102,6 +102,10 @@ h1 {
     margin-top: 15%;
 }
 
+h2 {
+    margin-bottom: 2%;
+}
+
 #checkout {
     background-color: white;
     border: 1px solid black;
@@ -116,5 +120,9 @@ button {
     width: 50%;
     font-size: medium;
     padding: 10px;
+}
+
+#page {
+    margin-top: 1%;
 }
 </style>

@@ -17,7 +17,7 @@ for (let item of cart) {
 let discount = 0
 
 for (let item of cart) {
-  discount += item.cost - (item.cost * item.sale)
+  discount += item.cost - (item.num * item.cost * item.sale)
 
   console.log()
 }
