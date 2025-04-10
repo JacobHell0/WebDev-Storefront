@@ -8,7 +8,6 @@
 
   <script>
   import apiServices from '@/services/apiServices';
-import { response } from 'express';
 
   export default
    {

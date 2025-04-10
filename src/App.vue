@@ -4,7 +4,7 @@
 import { RouterLink, RouterView } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import Logo from './components/Logo.vue';
+// import Logo from './components/Logo.vue';
 
 //Check the status of user authentication
 const isLoggedIn = ref(false);
@@ -46,7 +46,7 @@ onMounted(() => {
         </nav>
       </div>
     </header>
-    
+
     <div class="content">
       <RouterView />
     </div>
@@ -150,7 +150,7 @@ nav a:hover {
 }
 
 nav a.router-link-exact-active {
-  background-color: #E75D2A; 
+  background-color: #E75D2A;
 }
 
 /* Footer Styling */
@@ -173,8 +173,8 @@ footer {
 }
 
 .footer-container a {
-  color: white; 
-  text-decoration: none; 
+  color: white;
+  text-decoration: none;
 }
 
 .footer-container a:hover {
