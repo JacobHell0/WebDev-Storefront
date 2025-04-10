@@ -1,11 +1,18 @@
-Aaron James - 100830371:
+Contributions
 
-Caleb Radbourne - 100860371:
+1. Aaron James - 100830371: Login Component and authentication functionality (using firebase), Profile View including Account details, Order history and Payment methods
 
-Ayaan Mustafa - 100871665:
+2. Caleb Radbourne - 100860371: Most if not all code found in DisplayProductRow.vue, HomeView.vue, ProductListView.vue, App.vue. Routes involving the previously mentioned files in routs/index.js.
 
-Jacob Rempel - 100823181:
+3. Ayaan Mustafa - 100871665: Cart Page
 
-Suhrab Roeen - 100811513:
+4. Jacob Rempel - 100823181: Everything found in server.js, as well as all the axios endpoints in apiServices.js, and minor frontend contributions like making the contact us form post to the backend.
+                            Aaron and I also setup and managed the firebase firestore for database management. I also made read_csv_into_firebase.js which reads the amazon dataset into firebase.
 
-Patrick Baguisa - 100877804:
+5. Suhrab Roeen - 100811513:  All functionality found within Products page (views/ProductView.vue)
+
+6. Patrick Baguisa - 100877804: SVG Logo, About Page, Contact Page
+
+
+Note: All members agree with all contributions listed here. Everyone contributed to the project evenly, 
+and were actively engaged in coversations in our group discord.

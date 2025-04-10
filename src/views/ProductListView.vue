@@ -34,20 +34,23 @@
         </div>
       </aside>
   
-      <!-- Product List -->
+      <!-- Product Display Section -->
       <section class="product-list">
         <button
           class="product-card"
           v-for="product in filteredProducts"
           :key="product.id"
           @click="load_product_page(product.id)"
-        >
+        > 
+          <!-- Product Image -->
           <img :src="product.image" :alt="product.name" class="product-image" />
 
+          <!-- Info -->
           <div class="product-info">
             <h3 class="product-name">{{ product.name }}</h3>
             <p class="rating">{{ product.ratings }} ⭐ ({{ product.no_of_ratings }} Ratings)</p>
-          
+
+            <!-- Discounted Price -->
             <div v-if="product.discount_price && product.discount_price < product.actual_price">
               <div class="discounted-price">
                 <span class="discount-percent">
@@ -57,7 +60,8 @@
               </div>
               <div class="list-price">List: ${{ product.actual_price.toFixed(2) }}</div>
             </div>
-          
+            
+            <!-- Regular Price -->
             <div class="product-price" v-else>
               ${{ product.actual_price.toFixed(2) }}
             </div>
@@ -76,12 +80,15 @@
   const route = useRoute();
   const router = useRouter();
   const products = ref([]);
+
+  // Filter settings
   const selectedFilters = ref({
     price: '',
     discount: '',
     rating: '',
   });
 
+  // Props
   const { initialProducts } = defineProps({
     initialProducts: {
       type: Array,
@@ -93,6 +100,7 @@
     }
   });
   
+  // On page load, fetch products
   onMounted(async () => {
     const category = route.params.category;
   
@@ -107,11 +115,13 @@
     }
   });
   
+  // Calculate discount percent
   const getDiscountPercent = (original, discounted) => {
     return Math.max(1, Math.round((1 - discounted / original) * 100))
 
   };
   
+  // Apply filters to products
   const filteredProducts = computed(() => {
     return products.value.filter(product => {
       const price = product.discount_price || product.actual_price;
@@ -122,18 +132,16 @@
   
       let pass = true;
   
-      // Price Filter
+      // Apply each filter
       if (selectedFilters.value.price === 'under10') pass = price < 10;
       else if (selectedFilters.value.price === 'under25') pass = price < 25;
       else if (selectedFilters.value.price === 'under50') pass = price < 50;
       else if (selectedFilters.value.price === 'under100') pass = price < 100;
   
-      // Discount Filter
       if (selectedFilters.value.discount) {
         pass = pass && discount >= parseInt(selectedFilters.value.discount);
       }
   
-      // Rating Filter
       if (selectedFilters.value.rating) {
         pass = pass && rating >= parseInt(selectedFilters.value.rating);
       }
@@ -142,69 +150,69 @@
     });
   });
 
-
+  // Navigate to product page
   function load_product_page(productId) {
     router.push(`/product/${productId}`);
   }
-
-
-  
   </script>
   
-  <style scoped>
-  .product-list-view {
-    display: flex;
-    padding: 1rem;
-  }
-  
-  .sidebar {
-    width: 240px;
-    padding: 1rem;
-    background-color: #0077CA;
-    color: white;
-    border-radius: 8px;
-    height: 80vh;
-    position: fixed;
-    top: 80px;
-    overflow-y: auto;
-    padding-bottom: 4rem;
-  }
+<style scoped>
 
-  .option.active {
-    background-color: #00283C;
-    color: white;
-    font-weight: bold;
-  }
+.product-list-view {
+  display: flex;
+  padding: 1rem;
+  overflow-x: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sidebar {
+  width: 240px;
+  padding: 1rem;
+  background-color: #0077CA;
+  color: white;
+  border-radius: 8px;
+  height: 80vh;
+  position: fixed;
+  top: 80px;
+  overflow-y: auto;
+  padding-bottom: 4rem;
+}
+.option.active {
+  background-color: #00283C;
+  color: white;
+  font-weight: bold;
+}
+
+.filter-group {
+  margin-bottom: 1.5rem;
+}
+
+.option {
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  margin: 4px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.option:hover:not(.active) {
+  background-color: #e0e0e0;
+}
+
+.product-list {
+  margin-left: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+  width: 100%;
+}
   
-  .filter-group {
-    margin-bottom: 1.5rem;
-  }
-  
-  .option {
-    background-color: white;
-    color: black;
-    border: 1px solid #ccc;
-    padding: 6px 12px;
-    margin: 4px 0;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  .option:hover:not(.active) {
-    background-color: #e0e0e0;
-  }
-  
-  .product-list {
-    margin-left: 260px;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    flex: 1;
-    width: 100%;
-  }
-  
-  .product-card {
+.product-card {
   all: unset;
   cursor: pointer;
   display: flex;
@@ -221,77 +229,55 @@
   background-color: #f0f0f0;
 }
 
+.product-card img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
   
-  .product-card img {
-    width: 200px;
-    height: 200px;
-    object-fit: contain;
-    flex-shrink: 0;
-  }
-  
-  .product-price-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0.25rem 0;
-  }
-  
-  .discounted-price {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: black;
-  }
-  
-  .discount-percent {
-    color: red;
-    font-weight: bold;
-    margin-bottom: 0.2rem;
-    font-size: 1.5rem;
-  }
-  
-  .list-price {
-    font-size: 1rem;
-    color: #555;
-    text-decoration: line-through;
-  }
-  
-  .product-price {
-    font-weight: bold;
-    color: #0077ca;
-    margin: 0.25rem;
-    font-size: 1.25rem;
-  }
-  
-  .product-name {
-    font-size: 1.2rem;
-    margin: 0.25rem 0;
-    line-height: 1.2;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    height: 3.6em;
-    color: #0077ca;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-  }
-  
-  .rating {
-    font-size: 0.95rem;
-    color: #555;
-  }
-  
-  .add-to-cart {
-    margin-top: 0.5rem;
-    background: #E75D2A;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .add-to-cart:hover {
-    background: #005fa3;
-  }
-  </style>
+.discounted-price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: black;
+}
+
+.discount-percent {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 0.2rem;
+  font-size: 1.5rem;
+}
+
+.list-price {
+  font-size: 1rem;
+  color: #555;
+  text-decoration: line-through;
+}
+
+.product-price {
+  font-weight: bold;
+  color: #0077ca;
+  margin: 0.25rem;
+  font-size: 1.25rem;
+}
+
+.product-name {
+  font-size: 1.2rem;
+  margin: 0.25rem 0;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 3.6em;
+  color: #0077ca;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.rating {
+  font-size: 0.95rem;
+  color: #555;
+}
+</style>
   

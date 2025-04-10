@@ -3,12 +3,16 @@
 
 <template>
   <main class="home-page">
+
     <!-- Toolbar under header -->
    <div class="home-toolbar-fixed">   
     <div class="home-toolbar-wrapper">
-    <div class="home-toolbar">
+     <div class="home-toolbar">
+
+      <!-- Buy Again button -->
       <button @click="loadOrderHistory">Buy Again</button>
 
+      <!-- Category Dropdown -->
       <div class="category-dropdown">
         <select v-model="selectedCategory" @change="goToCategory">
           <option disabled value="">Search by Category</option>
@@ -17,17 +21,19 @@
           </option>
         </select>
       </div>
-    </div>
+     </div>
     </div> 
   </div>
 
   <div class="toolbar-spacer"></div>
 
+  <!-- Static DisplayProductRow for top rated products -->
     <DisplayProductRow
       source = "rating"
       title = "Top Rated Picks:"
     />
 
+  <!-- Dynamic DisplayProductRow for shuffled categories -->
     <DisplayProductRow
       v-for="category in randomCategories"
       :key="category"
@@ -50,6 +56,7 @@ const selectedCategory = ref('');
 const mainCategories = ref([]);
 const randomCategories = ref([]);
 
+// Load all categories when mounted
 onMounted(async () => {
   try {
     const categories = await apiServices.getUniqueCategories();
@@ -61,12 +68,13 @@ onMounted(async () => {
   }
 });
 
+// Shuffle and pick 10 random categories
 function shuffleRandomCategories(categories) {
   const shuffled = categories.sort(() => 0.5 - Math.random());
   randomCategories.value = shuffled.slice(0, 10);
 }
 
-
+// Buy Again: Get user's previous order history
 async function loadOrderHistory() {
   const auth = getAuth();
   const user = auth.currentUser;
@@ -98,6 +106,7 @@ async function loadOrderHistory() {
   }
 }
 
+// Fetch and show category-based product list
 async function goToCategory() {
   if (!selectedCategory.value) return;
 
@@ -161,14 +170,6 @@ async function goToCategory() {
 
 .home-toolbar button:hover {
   background-color: #e0e0e0;
-}
-
-.filter-group select {
-  padding: 8px;
-  border-radius: 4px;
-  border: none;
-  font-weight: bold;
-  color: #0077CA;
 }
 
 .category-dropdown select {
