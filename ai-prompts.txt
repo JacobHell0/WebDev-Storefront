@@ -1,0 +1,3 @@
+Suhrab Roeen - ProductsView.vue:
+  Used AI to create a function that calculates distributions of ratings from 1-5, given the average rating (4.6, 3.2) and the number of ratings
+  Prompt: "how can I make code logic in js to where if I put in an example average rating and number of ratings it dynamically gets the individual ratings for it from 1-5"
