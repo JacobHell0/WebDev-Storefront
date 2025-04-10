@@ -249,42 +249,42 @@
             },
             validateField(field)  //Validation logic (same as the login)
             {
-            if (field === 'email') 
-            {
-                this.errors.email = this.editableUserDetails.email && /@.*\.(com|ca|net)$/.test(this.editableUserDetails.email.trim()) ? '' : 'Invalid email address.';
-            } 
-            else if (field === 'firstName') 
-            {
-                this.errors.firstName = this.editableUserDetails.firstName && /^[a-zA-Z]+$/.test(this.editableUserDetails.firstName.trim()) ? '' : 'First name must contain only letters.';
-            } 
-            else if (field === 'lastName') 
-            {
-                this.errors.lastName = this.editableUserDetails.lastName && /^[a-zA-Z]+$/.test(this.editableUserDetails.lastName.trim()) ? '' : 'Last name must contain only letters.';
-            } 
-            else if (field === 'address') 
-            {
-                this.errors.address = this.editableUserDetails.address && /^\d+\s[A-Za-z\s]+$/.test(this.editableUserDetails.address.trim()) ? '' : 'Address must start with numbers followed by the street name.';
-            } 
-            else if (field === 'city') 
-            {
-                this.errors.city = this.editableUserDetails.city && /^[a-zA-Z\s]+$/.test(this.editableUserDetails.city.trim()) ? '' : 'City must contain only letters.';
-            } 
-            else if (field === 'postalcode') 
-            {
-                this.errors.postalcode = this.editableUserDetails.postalcode && this.editableUserDetails.postalcode.trim().length > 4 ? '' : 'Postal/Zip Code must be at least 5 characters.';
-            } 
-            else if (field === 'province') 
-            {
-                this.errors.province = this.editableUserDetails.province.trim() ? '' : 'Please select a province or state.';
-            } 
-            else if (field === 'country') 
-            {
-                this.errors.country = this.editableUserDetails.country.trim() ? '' : 'Please select a country.';
-            } 
-            else if (field === 'telephone') 
-            {
-                this.errors.telephone = this.editableUserDetails.telephone && /^\d{10}$/.test(this.editableUserDetails.telephone.trim()) ? '' : 'Telephone must be 10 digits.';
-            }
+                if (field === 'email') 
+                {
+                    this.errors.email = this.editableUserDetails.email && /@.*\.(com|ca|net)$/.test(this.editableUserDetails.email.trim()) ? '' : 'Invalid email address.';
+                } 
+                else if (field === 'firstName') 
+                {
+                    this.errors.firstName = this.editableUserDetails.firstName && /^[a-zA-Z]+$/.test(this.editableUserDetails.firstName.trim()) ? '' : 'First name must contain only letters.';
+                } 
+                else if (field === 'lastName') 
+                {
+                    this.errors.lastName = this.editableUserDetails.lastName && /^[a-zA-Z]+$/.test(this.editableUserDetails.lastName.trim()) ? '' : 'Last name must contain only letters.';
+                } 
+                else if (field === 'address') 
+                {
+                    this.errors.address = this.editableUserDetails.address && /^\d+\s[A-Za-z\s]+$/.test(this.editableUserDetails.address.trim()) ? '' : 'Address must start with numbers followed by the street name.';
+                } 
+                else if (field === 'city') 
+                {
+                    this.errors.city = this.editableUserDetails.city && /^[a-zA-Z\s]+$/.test(this.editableUserDetails.city.trim()) ? '' : 'City must contain only letters.';
+                } 
+                else if (field === 'postalcode') 
+                {
+                    this.errors.postalcode = this.editableUserDetails.postalcode && this.editableUserDetails.postalcode.trim().length > 4 ? '' : 'Postal/Zip Code must be at least 5 characters.';
+                } 
+                else if (field === 'province') 
+                {
+                    this.errors.province = this.editableUserDetails.province.trim() ? '' : 'Please select a province or state.';
+                } 
+                else if (field === 'country') 
+                {
+                    this.errors.country = this.editableUserDetails.country.trim() ? '' : 'Please select a country.';
+                } 
+                else if (field === 'telephone') 
+                {
+                    this.errors.telephone = this.editableUserDetails.telephone && /^\d{10}$/.test(this.editableUserDetails.telephone.trim()) ? '' : 'Telephone must be 10 digits.';
+                }
             },
             validateForm() //function to validate each field
             {
@@ -332,16 +332,6 @@
             },
             async saveCard() //Function which saves the card to the database
             {
-                apiServices.getByCategory("grocery & gourmet foods").then(response => {
-                let jsonData = response;
-                // console.log("calling backend with:");
-                // console.log(jsonData);
-                console.log(this.userId)
-                apiServices.putOrderHistory(jsonData, this.user.uid).then(response => {
-                console.log(response);
-                });
-            });
-
                 if (this.validateCardForm())
                 {
                     const db = getFirestore(app);
