@@ -222,38 +222,33 @@ function calculateRatingDistribution(averageRating, totalRatings) {
 // Function to create/update the chart
 function updateChart() {
   if (!chartContainer.value) return;
-  
+
   // Clear existing chart
   d3.select(chartContainer.value).selectAll("*").remove();
   
   // Calculate rating distribution
   const ratingData = calculateRatingDistribution(product.value.ratings, product.value.no_of_ratings);
 
-  // Chart dimensions
-  const margin = { top: 20, right: 20, bottom: 30, left: 40 };
-  const width = 400 - margin.left - margin.right;
-  const height = 200 - margin.top - margin.bottom;
 
-  // Create SVG
-  svg = d3.select(chartContainer.value)
-    .append('svg')
+  const margin = { top: 20, right: 30, bottom: 30, left: 40 };
+  const width = 400 - margin.left - margin.right;
+  const height = 200 - margin.top - margin.bottom
+  
+  svg = d3.select(chartContainer.value).append('svg')
     .attr('width', width + margin.left + margin.right)
     .attr('height', height + margin.top + margin.bottom)
     .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
-
-  // X scale
+  
   const x = d3.scaleLinear()
     .domain([0, d3.max(ratingData, d => d.count)])
     .range([0, width]);
 
-  // Y scale
   const y = d3.scaleBand()
     .domain(ratingData.map(d => d.rating))
     .range([0, height])
     .padding(0.1);
-
-  // Add bars
+    
   svg.selectAll('rect')
     .data(ratingData)
     .enter()
@@ -266,8 +261,7 @@ function updateChart() {
     .attr('rx', 4)
     .attr('ry', 4);
 
-  // Add count labels
-  svg.selectAll('.count-label')
+    svg.selectAll('.count-label')
     .data(ratingData)
     .enter()
     .append('text')
@@ -279,13 +273,12 @@ function updateChart() {
     .style('font-size', '12px')
     .style('fill', '#666');
 
-  // Add rating labels
-  svg.selectAll('.rating-label')
+    svg.selectAll('.rating-label')
     .data(ratingData)
     .enter()
     .append('text')
     .attr('class', 'rating-label')
-    .attr('x', -5)
+    .attr('x', -20)
     .attr('y', d => y(d.rating) + y.bandwidth() / 2)
     .attr('dy', '0.35em')
     .text(d => `${d.rating} ★`)
@@ -439,11 +432,14 @@ const addToCart = () => {
 }
 
 .rating-distribution h3 {
-  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
   color: #333;
 }
 
 .chart-container {
+  display: flex;
+  justify-content: center;
   width: 100%;
   height: 200px;
 }
