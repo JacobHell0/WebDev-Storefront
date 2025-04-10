@@ -1,9 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-// import Cart from '../views/Cart.vue';
 import ServerStatus from '@/components/ServerStatus.vue'
 import Login from '../components/Login.vue';
-import Profile from '../components/Profile.vue'; 
+import Profile from '../views/ProfileView.vue'; 
 import Cart from '@/components/Cart.vue';
 import ProductListView from '../views/ProductListView.vue';
 
@@ -42,7 +41,7 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path: '/product',
+      path: '/product/:id',
       name: 'Product',
       component: () => import('../views/ProductView.vue'),
     },

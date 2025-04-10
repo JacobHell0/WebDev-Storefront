@@ -29,13 +29,10 @@
     />
 
     <DisplayProductRow
-      source = "appliances"
-      title = "Appliances:"
-    />
-
-    <DisplayProductRow
-      source = "grocery & gourmet foods"
-      title = "Grocery & Gourmet Foods:"
+      v-for="category in randomCategories"
+      :key="category"
+      :source="category"
+      :title="category.charAt(0).toUpperCase() + category.slice(1) + ':'"
     />
 
   </main>
@@ -51,16 +48,23 @@ import { getAuth } from 'firebase/auth';
 const router = useRouter();
 const selectedCategory = ref('');
 const mainCategories = ref([]);
+const randomCategories = ref([]);
 
 onMounted(async () => {
   try {
-    const response = await apiServices.getUniqueCategories();
-    mainCategories.value = response;
+    const categories = await apiServices.getUniqueCategories();
+    mainCategories.value = categories;
+    shuffleRandomCategories(categories);
 
   } catch (error) {
     console.error('Failed to load categories:', error);
   }
 });
+
+function shuffleRandomCategories(categories) {
+  const shuffled = categories.sort(() => 0.5 - Math.random());
+  randomCategories.value = shuffled.slice(0, 10);
+}
 
 
 async function loadOrderHistory() {
@@ -75,7 +79,6 @@ async function loadOrderHistory() {
   try {
     const result = await apiServices.getOrderHistory(user.uid);
     const flatProducts = result.flat();
-
     const uniqueProducts = Object.values(
       flatProducts.reduce((acc, product) => {
         acc[product.id] = product;

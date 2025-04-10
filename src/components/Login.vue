@@ -202,6 +202,7 @@
         },
         loginUser() 
         {
+            this.errors.general = '';
             if (this.validateForm()) //Ensure fields are valid 
             {
                 const auth = getAuth(app);
