@@ -85,44 +85,64 @@ function thisWorks() {
 
 <style scoped>
 #page {
+    margin-top: 35px;
     display: grid;
-    grid-template-columns: 60% 40%;
-}
-
-#items {
-    margin-left: 2%;
-}
-
-#summary {
-    margin-left: 20%;
-    padding: 20px;
-}
-
-h1 {
-    margin-top: 15%;
+    grid-template-rows: auto auto;
+    grid-template-columns: auto;
 }
 
 h2 {
+    margin-left: 5%;
     margin-bottom: 2%;
-}
-
-#checkout {
-    background-color: white;
-    border: 1px solid black;
-    border-radius: 3px;
 }
 
 button {
     cursor: pointer;
     margin-top: 5%;
-    margin-left: 25%;
-    /* font-size: large; */
-    width: 50%;
+    margin-left: 30%;
+    margin-bottom: 5%;
+    width: 40%;
     font-size: medium;
-    padding: 10px;
+    padding: 5px;
 }
 
-#page {
-    margin-top: 1%;
+@media (min-width: 1024px) {
+    #page {
+        display: grid;
+        grid-template-columns: 60% 40%;
+        margin-top: 1%;
+    }
+
+    #items {
+        margin-left: 2%;
+    }
+
+    #summary {
+        margin-left: 20%;
+        padding: 20px;
+    }
+
+    h1 {
+        margin-top: 15%;
+    }
+
+    h2 {
+        margin-bottom: 2%;
+    }
+
+    #checkout {
+        background-color: white;
+        border: 1px solid black;
+        border-radius: 3px;
+    }
+
+    button {
+        cursor: pointer;
+        margin-top: 5%;
+        margin-left: 25%;
+        width: 50%;
+        font-size: medium;
+        padding: 10px;
+    }
 }
 </style>

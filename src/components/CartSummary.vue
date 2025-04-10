@@ -103,7 +103,17 @@ h3 {
 
 table {
   background-color: aliceblue;
-  margin-top: 20%;
+  margin-top: 5%;
   border-collapse: collapse;
+  width: 90%;
+  margin-left: 5%;
+}
+
+@media (min-width: 1024) {
+  table {
+    background-color: aliceblue;
+    margin-top: 20%;
+    border-collapse: collapse;
+  }
 }
 </style>
