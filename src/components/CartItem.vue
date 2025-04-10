@@ -26,7 +26,13 @@ function remove_item() {
         <td class="normalCost" style="text-decoration: line-through;">${{ itemProp.cost }}</td>
         <td class="saleCost" style="color: red; font-weight: bold;">${{ itemProp.cost * (1 - itemProp.sale) }}</td>
       </div>
-      <td style="text-align: center;">{{ itemProp.num }}</td>
+      <td>
+        <div id="num">
+          <button class="inc">/\</button>
+          <input :value="itemProp.num" readonly />
+          <button class="dec arrow down">\/</button>
+        </div>
+      </td>
       <td @click="remove_item()" class="remove" style="text-align: right;"><button>{{ "❌" }}</button></td>
     </tr>
     <tr class="info">
@@ -76,6 +82,36 @@ button {
   background-color: white;
   border: none;
   text-align: right;
+  cursor: pointer;
+}
+
+button:hover {
+  box-shadow: 0px 0px 1px;
+}
+
+#num {
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto auto auto;
+  text-align: center;
+}
+
+input {
+  text-align: center;
+  width: 60%;
+}
+
+.inc, .dec {
+  text-align: center;
+  width: 60%;
+}
+
+.inc {
+  margin-bottom: 4px;
+}
+
+.dec {
+  margin-top: 4px;
 }
 
 @media (min-width: 1024px) {
