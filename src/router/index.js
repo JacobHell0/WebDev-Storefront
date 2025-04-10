@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import ServerStatus from '@/components/ServerStatus.vue'
 import Login from '../components/Login.vue';
 import Profile from '../components/Profile.vue'; 
+import ProductListView from '../views/ProductListView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,12 @@ const router = createRouter({
       path: '/product',
       name: 'Product',
       component: () => import('../views/ProductView.vue'),
+    },
+    {
+      path: '/products',
+      name: 'ProductListView',
+      component: ProductListView,
+      props: route => ({ initialProducts: route.query.data ? JSON.parse(route.query.data) : [], title: route.query.title || '' })
     }
   ],
 })

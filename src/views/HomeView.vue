@@ -5,38 +5,19 @@
   <main class="home-page">
     <!-- Toolbar under header -->
    <div class="home-toolbar-fixed">   
+    <div class="home-toolbar-wrapper">
     <div class="home-toolbar">
-      <button>Buy Again</button>
-      <button>Deals</button>
-      <button>Browsing History</button>
+      <button @click="loadOrderHistory">Buy Again</button>
 
-      <!-- Price filter dropdown -->
-      <div class="filter-group">
-        <select id="price-filter">
-          <option>Price</option>
-          <option value="under25">Under $25</option>
-          <option value="under50">Under $50</option>
+      <div class="category-dropdown">
+        <select v-model="selectedCategory" @change="goToCategory">
+          <option disabled value="">Search by Category</option>
+          <option value="grocery & gourmet foods">Grocery & Gourmet Foods</option>
+          <option value="tv, audio & cameras">TV, Audio & Cameras</option>
+          <option value="appliances">Appliances</option>
         </select>
       </div>
-
-      <!-- Discount filter dropdown -->
-      <div class="filter-group">
-        <select id="discount-filter">
-          <option>Discount</option>
-          <option value="10">10% off or more</option>
-          <option value="20">20% off or more</option>
-          <option value="50">50% off or more</option>
-        </select>
-      </div>
-
-      <!-- Rating filter dropdown -->
-      <div class="filter-group">
-        <select id="rating-filter">
-          <option>Rating</option>
-          <option value="4up">4 stars & up</option>
-          <option value="3up">3 stars & up</option>
-        </select>
-      </div>
+    </div>
     </div> 
   </div>
 
@@ -63,22 +44,61 @@
 
 <script setup>
 import DisplayProductRow from '@/components/DisplayProductRow.vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import apiServices from '@/services/apiServices';
+import { getAuth } from 'firebase/auth';
+
+const router = useRouter();
+const selectedCategory = ref('');
+
+async function loadOrderHistory() {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (!user) {
+    alert('Please log in to view your order history.');
+    return;
+  }
+
+  try {
+    const result = await apiServices.getOrderHistory(user.uid);
+    const flatProducts = result.flat();
+    router.push({
+      name: 'ProductListView',
+      query: {
+        data: JSON.stringify(flatProducts),
+        title: 'Buy Again'
+      }
+    });
+  } catch (err) {
+    console.error('Failed to fetch order history:', err);
+  }
+}
+
+async function goToCategory() {
+  if (!selectedCategory.value) return;
+
+  try {
+    const result = await apiServices.getByCategory(selectedCategory.value);
+    router.push({
+      name: 'ProductListView',
+      query: {
+        data: JSON.stringify(result),
+        title: selectedCategory.value
+      }
+    });
+  } catch (err) {
+    console.error(`Failed to fetch products for category ${selectedCategory.value}`, err);
+  }
+}
 </script>
 
 <style scoped>
 .home-toolbar {
   display: flex;
-  flex-wrap: nowrap;
-  gap: 2rem;
-  padding: 1rem;
   align-items: center;
-  justify-content: center;
-  background-color: #0077CA;
-  color: white;
-}
-
-.toolbar-spacer {
-  height: 62.97px;
+  gap: 1rem;
 }
 
 .home-toolbar-fixed {
@@ -86,7 +106,24 @@ import DisplayProductRow from '@/components/DisplayProductRow.vue';
   top: 65.47px;
   width: 100%;
   z-index: 9;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0;
+}
+
+.home-toolbar-wrapper {
   background-color: #0077CA;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.toolbar-spacer {
+  height: 62.97px;
 }
 
 .home-toolbar button {
@@ -110,5 +147,25 @@ import DisplayProductRow from '@/components/DisplayProductRow.vue';
   border: none;
   font-weight: bold;
   color: #0077CA;
+}
+
+.category-dropdown select {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: none;
+  font-weight: bold;
+  background-color: white;
+  color: #0077CA;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.category-dropdown select:hover {
+  background-color: #f0f0f0;
+}
+
+.category-dropdown option {
+  color: black;
 }
 </style>
