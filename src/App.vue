@@ -1,49 +1,37 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router';
-import { onMounted, ref } from 'vue';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import Logo from './components/Logo.vue';
-
-const isLoggedIn = ref(false);
-onMounted(() => {
-  const auth = getAuth();
-  onAuthStateChanged(auth, (user) => {
-    isLoggedIn.value = !!user;
-  });
-});
-</script>
-
 <template>
   <main class="full-page">
+    <!-- HEADER -->
     <header>
       <div class="header-container">
-        <!-- Logo -->
+        <!-- Logo (Left Column) -->
         <div class="header-name-logo">
           <Logo class="logo-svg" />
         </div>
 
-        <!-- Search Bar -->
+        <!-- Search Bar (Center Column) -->
         <div class="search-bar-container">
           <input type="text" placeholder="Search..." />
         </div>
 
-        <!-- Navbar -->
+        <!-- Navigation (Right Column) -->
         <nav class="header-nav">
           <ul>
             <li><RouterLink to="/">Home</RouterLink></li>
             <li><RouterLink to="/cart">Cart</RouterLink></li>
             <li><RouterLink to="/status">Server Test (Debug)</RouterLink></li>
-            <li><RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink></li>
-            <li><RouterLink v-if="isLoggedIn" to="/profile">Profile</RouterLink></li>
+            <li v-if="!isLoggedIn"><RouterLink to="/login">Login</RouterLink></li>
+            <li v-if="isLoggedIn"><RouterLink to="/profile">Profile</RouterLink></li>
           </ul>
         </nav>
       </div>
     </header>
 
+    <!-- MAIN CONTENT -->
     <div class="content">
       <RouterView />
     </div>
 
+    <!-- FOOTER -->
     <footer>
       <div class="footer-container">
         <RouterLink to="/about">About</RouterLink>
@@ -53,6 +41,21 @@ onMounted(() => {
     </footer>
   </main>
 </template>
+
+<script setup>
+import { RouterLink, RouterView } from 'vue-router'
+import { onMounted, ref } from 'vue'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import Logo from './components/Logo.vue'
+
+const isLoggedIn = ref(false)
+onMounted(() => {
+  const auth = getAuth()
+  onAuthStateChanged(auth, (user) => {
+    isLoggedIn.value = !!user
+  })
+})
+</script>
 
 <style>
 html, body, #app {
@@ -70,22 +73,24 @@ html, body, #app {
   max-width: 100%;
 }
 
-.main-content {
-  flex: 1;
-  padding-top: 80px;
-}
-
+/* HEADER */
 header {
   background-color: #003C71;
   color: white;
   padding: 1rem;
   width: 100%;
-  position: fixed;
+  /* position: fixed; */
+  position: sticky;
   top: 0;
   left: 0;
   z-index: 10;
 }
 
+/* Grid layout for header:
+   - Left: Logo
+   - Center: Search Bar
+   - Right: Nav Links
+*/
 .header-container {
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -99,13 +104,14 @@ header {
   align-items: center;
 }
 
+/* Responsive, scalable logo */
 .logo-svg {
-  width: 60px;
+  width: clamp(60px, 20vw, 300px);
   height: auto;
-  position: absolute;
-  top: -10px;
+  transition: width 0.3s ease;
 }
 
+/* Center Search Bar */
 .search-bar-container {
   width: 100%;
   max-width: 400px;
@@ -118,31 +124,47 @@ header {
   width: 100%;
 }
 
+/* Right Navigation */
 .header-nav {
   justify-self: end;
 }
 
-nav ul {
+.header-nav ul {
   display: flex;
   gap: 16px;
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
 
-nav a {
+.header-nav a {
   color: white;
   padding: 8px 16px;
+  text-decoration: none;
 }
 
-nav a:hover {
+.header-nav a:hover {
   text-decoration: underline;
 }
 
-nav a.router-link-exact-active {
+.header-nav a.router-link-exact-active {
   background-color: #E75D2A;
 }
 
+/* MAIN CONTENT */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+header{
+  margin-bottom: 0;
+}
+
+/* FOOTER */
 footer {
   background-color: #003C71;
   color: white;
@@ -156,7 +178,6 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
   gap: 0.5rem;
 }
 
@@ -167,13 +188,5 @@ footer {
 
 .footer-container a:hover {
   text-decoration: underline;
-}
-
-.content {
-  flex: 1;
-  overflow-y: auto;
-  padding-top: 72px;
-  width: 100%;
-  box-sizing: border-box;
 }
 </style>
