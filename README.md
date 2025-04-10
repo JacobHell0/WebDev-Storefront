@@ -77,7 +77,12 @@ A responsive e-commerence storefront built with Vue 3, served by a nodemon backe
     [Local Host](http://localhost:3000/)
 
 
-5. **Group Members and Contributions**
+5. **User accounts**
+
+    Anyone can make a user account following the intuitive sign up UI. Just click Login in the top right to get started! The website is browsable without an account.
+
+
+6. **Group Members and Contributions**
 
     1. Aaron James
 
