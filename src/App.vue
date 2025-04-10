@@ -104,10 +104,11 @@ header {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+
 }
 
 .logo {
-  width: 40px;
+  width: 300px;
   height: 40px;
 }
 
