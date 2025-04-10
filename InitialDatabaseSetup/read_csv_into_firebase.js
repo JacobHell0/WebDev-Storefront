@@ -28,7 +28,7 @@ const dirName = 'initialDatabaseSetup'
 
 
 async function pushToFirebase(jsonData) {
-	for(let entry in jsonData) {
+	for(let entry = 0; entry < jsonData.length; entry++) {
 		if(jsonData[entry] === undefined) {continue;} // don't push that one case
 
 		let i = jsonData[entry];
@@ -67,47 +67,89 @@ function generateJson(fileInputName) {
 	return records;
 }
 
+async function isImageLinkValid(url) {
+    try {
+        const res = await fetch(url, { method: 'HEAD' });
+        return res.ok && res.headers.get('content-type')?.startsWith('image/');
+    } catch (error) {
+        return false;
+    }
+}
 
-function cleanJsonData(jsonData) {
-	for(let i in jsonData) {
+async function cleanJsonData(jsonData) {
+
+    let newJsonData = [];
+
+    for(let i = 0; i < jsonData.length; i++) {
+        if (await isImageLinkValid(jsonData[i].image)) {
+            newJsonData.push(jsonData[i]);
+        }
+    }
+
+    for(let i = 0; i < newJsonData.length; i++) {
 		//convert indian rupee to cad
-		// console.log(jsonData[i].discount_price)
-		jsonData[i].discount_price = parseFloat(jsonData[i].discount_price.replace('₹', '').replace(',', '')) * 0.016;
-		jsonData[i].actual_price = parseFloat(jsonData[i].actual_price.replace('₹', '').replace(',', '')) * 0.016;
-		jsonData[i].no_of_ratings = parseFloat(jsonData[i].no_of_ratings);
-		jsonData[i].ratings = parseFloat(jsonData[i].ratings);
-		jsonData[i].lowercase_name = jsonData[i].name.toLowerCase();
+		newJsonData[i].discount_price = parseFloat(newJsonData[i].discount_price.replace('₹', '').replace(',', '')) * 0.016;
+		newJsonData[i].actual_price = parseFloat(newJsonData[i].actual_price.replace('₹', '').replace(',', '')) * 0.016;
+		newJsonData[i].no_of_ratings = parseFloat(newJsonData[i].no_of_ratings);
+		newJsonData[i].ratings = parseFloat(newJsonData[i].ratings);
+		newJsonData[i].lowercase_name = newJsonData[i].name.toLowerCase();
 	}
-	return jsonData;
+
+    console.log(`Processed ${newJsonData.length} entries`);
+
+	return newJsonData;
 }
 
 async function main() {
 
-	const HOW_MANY_FILES_TO_LOOK_AT = 2
+	// const HOW_MANY_FILES_TO_LOOK_AT = 2
 	const ENTRIES_PER_FILE = 3
 
 	// for each file
 	let files = fs.readdirSync(`${dirName}/amazon/`);
 	let c = 0;
+    let empty = 0;
+    let empty_names = [];
+
+    let unique_categories = [];
+
 	for(let file of files) {
 		console.log(file);
 		let jsonData = generateJson(`${dirName}/amazon/${file}`); // grab first 100 entries (1 entry to start with)
-		let snippet = jsonData.slice(0, ENTRIES_PER_FILE);
-		if (JSON.stringify(snippet) === '[]') {continue;}
+        let snippet = jsonData.slice(0, ENTRIES_PER_FILE);
 
-		let clean_snippet = cleanJsonData(snippet); // clean json data
+        if (JSON.stringify(snippet) === '[]') {
+            empty++;
+            empty_names.push(file);
+            continue;
+        }
+
+		let clean_snippet = await cleanJsonData(snippet); // clean json data
+        if (JSON.stringify(clean_snippet) === '[]') {
+            empty++;
+            empty_names.push(file);
+            continue;
+        }
+
+        // keep track of categories (only if the json data is not empty)
+        unique_categories.push(snippet[0].main_category);
 
 		console.log(`========================== pushing: ${file} ==========================`)
 		await pushToFirebase(clean_snippet);
 		console.log(`========================== finished ${file} ==========================\n\n`)
 
-		if (c === HOW_MANY_FILES_TO_LOOK_AT) break;
-		c++;
+		// if (c === HOW_MANY_FILES_TO_LOOK_AT) break;
+		// c++;
 	}
-	console.log("Database initialized\n");
+    console.log("unique categories: ");
+    console.log(unique_categories);
+	console.log("Database initialized, empty files: ", empty, "\n");
 	return;
 }
 
 
 await main();
+// console.log(await isImageLinkValid("https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/91C6slV1XGL._AC_UL320_.jpg"), "should be: ", false);
+// console.log(await isImageLinkValid("https://m.media-amazon.com/images/I/31UISB90sYL._AC_UL320_.jpg"), "should be: ", true);
+
 process.exit()
