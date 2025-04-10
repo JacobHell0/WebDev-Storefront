@@ -17,8 +17,11 @@
             <img :src="product.image" :alt="product.name" class="product-image" />
             
             <h3 class="product-name">{{ product.name }}</h3>
-            <div class="product-rating">
+            <div v-if="product.no_of_ratings > 1" class="product-rating">
                {{ product.ratings }} ⭐ (From {{ product.no_of_ratings }} Ratings)
+            </div>
+            <div v-else class="product-rating">
+               {{ product.ratings }} ⭐ (From {{ product.no_of_ratings }} Rating)
             </div>
             <div class="product-price-container" v-if="product.discount_price && product.discount_price < product.actual_price">
                 
@@ -49,6 +52,9 @@
   import apiServices from '@/services/apiServices';
   import arrowRight from '@/assets/arrow_right.png';
   import arrowLeft from '@/assets/arrow_left.png';
+  import { useRouter } from 'vue-router';
+  
+  const router = useRouter();
   
   const props = defineProps({
     source: {
@@ -82,7 +88,7 @@
   
 
   function load_product_page(productId) {
-    console.log('Loading product page for:', productId);
+    router.push(`/product/${productId}`);
   }
   
   const scrollContainer = ref(null);
