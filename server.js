@@ -55,7 +55,7 @@ app.get('/api/products/:product_id', async (req, res) => {
 
     console.log("accessing firebase");
 
-    const doc = getProductById(product_id);
+    const doc = await getProductById(product_id);
     if (!doc.exists) {
         console.log(`Unable to fetch document: ${product_id}`);
         return res.status(404).json({message: "error, document does not exist"})
