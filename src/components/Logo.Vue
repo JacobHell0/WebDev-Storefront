@@ -1,3 +1,5 @@
+<!-- MODIFIED  -->
+
 <template>
   <div class="logo-wrapper">
     <svg
@@ -53,8 +55,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  transform: scale(7); /* ← Bigger now */
-  transform-origin: top left; /* keeps it positioned near top/left */
+  transform: scale(7); 
+  transform-origin: top left; 
   margin-top: 0px;
 }
 

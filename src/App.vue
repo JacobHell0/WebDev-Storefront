@@ -2,7 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-//import Logo from './components/Logo.vue';
+import Logo from './components/Logo.vue';
 
 const isLoggedIn = ref(false);
 onMounted(() => {
