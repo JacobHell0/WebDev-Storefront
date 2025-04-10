@@ -128,6 +128,14 @@ export default //CURRENTLY ALL JUST DEBUG REQUESTS
                 throw error;
             });
     },
+    deleteCart(userid) {
+        return apiClient.delete(`/cart/delete/all/${userid}`)
+            .then(response => response.data)
+            .catch(error => {
+                console.error(`Error deleting item by id: ${error}`);
+                throw error;
+            });
+    },
 
 
 

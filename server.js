@@ -416,7 +416,7 @@ app.get('/api/cart/get/:userid/', async (req, res) => {
 
         let returnData = [];
 
-        // Process each cart item
+        // go throughg each item retrieved from firebase
         for (let doc of snapshot.docs) {
 
             const cartItem = doc.data();
@@ -440,14 +440,24 @@ app.get('/api/cart/get/:userid/', async (req, res) => {
     }
 });
 
+app.delete('/api/cart/delete/all/:userid', async (req, res) => {
+    const { userid } = req.params;
 
+    const cartRef = db.collection('users').doc(userid).collection('cart');
 
-app.delete('/api/cart/delete/:userid/:productid', async (req, res) => {
-    //removes an item from your cart
-});
+    try {
+        const querySnapshot = await cartRef.get();
 
-app.delete('/api/cart/delete/:userid/all', async (req, res) => {
-    //removes all items from your cart
+        //delete all documents in cart
+        const deletePromises = querySnapshot.docs.map(doc => doc.ref.delete()); //found from firebase
+        await Promise.all(deletePromises);
+
+        console.log('All carts deleted successfully');
+        res.status(200).send('All carts deleted successfully');
+    } catch (error) {
+        console.error('Error deleting carts: ', error);
+        res.status(500).send('Error deleting carts');
+    }
 });
 
 
