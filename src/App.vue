@@ -7,13 +7,14 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import Logo from './components/Logo.vue';
 import apiServices from '@/services/apiServices';
 
-const isLoggedIn = ref(false);
+const isLoggedIn = ref(false); // Tracks login state
 const router = useRouter();
 const route = useRoute();
 
 const searchText = ref('');
 const searchError = ref(false);
 
+// On component mount, set up Firebase auth listener
 onMounted(() => {
   const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
@@ -21,6 +22,7 @@ onMounted(() => {
   });
 });
 
+// Handles search input and navigation to result view
 async function handleSearch() {
   const query = searchText.value.trim().toLowerCase(); // ensure lowercase
 
@@ -49,7 +51,7 @@ async function handleSearch() {
   }
 }
 
-
+// Dynamic placeholder for search box
 const searchPlaceholder = computed(() =>
   searchError.value ? 'No Items Found' : 'Search...'
 );
@@ -59,10 +61,10 @@ const searchPlaceholder = computed(() =>
   <main class="full-page">
     <header>
       <div class="header-container">
-        <!-- Logo/Site Name -->
+
+        <!-- Logo -->
         <div class="header-name-logo">
           <Logo class ="logo"/>
-          <h1></h1>
         </div>
 
         <!-- Search Bar -->
@@ -87,6 +89,7 @@ const searchPlaceholder = computed(() =>
       </div>
     </header>
 
+    <!-- Page content below header -->
     <div class="content">
       <RouterView :key="route.fullPath"/>
     </div>
@@ -116,11 +119,6 @@ html, body, #app {
   min-height: 100vh;
   width: 100vw;
   max-width: 100%;
-}
-
-.main-content {
-  flex: 1;
-  padding-top: 80px;
 }
 
 header {
@@ -193,15 +191,6 @@ h1 {
   background-color: #f0f0f0;
 }
 
-.search-error-msg {
-  color: red;
-  font-size: 0.85rem;
-  margin-top: 0.3rem;
-  text-align: center;
-}
-
-
-
 .nav-buttons {
   display: flex;
   gap: 1rem;
@@ -228,7 +217,6 @@ h1 {
   background-color: #E75D2A;
   color: white;
 }
-
 
 /* Footer Styling */
 footer {
