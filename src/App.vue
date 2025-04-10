@@ -4,6 +4,7 @@
 import { RouterLink, RouterView } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import Logo from './components/Logo.vue';
 
 //Check the status of user authentication
 const isLoggedIn = ref(false);
@@ -18,6 +19,7 @@ onMounted(() => {
 <template>
   <main class="full-page">
     <header>
+      <Logo/>
       <div class="header-container">
         <!-- Logo/Site Name -->
         <div class="header-name-logo">
