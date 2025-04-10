@@ -66,11 +66,9 @@ A responsive e-commerence storefront built with Vue 3, served by a nodemon backe
     npm install
     ```
 
-3. **Setup and install the server**
+3. **Setup the server**
 
     ```
-    npm install -g nodemon
-
     nodemon server.js
     ```
 
@@ -83,25 +81,25 @@ A responsive e-commerence storefront built with Vue 3, served by a nodemon backe
 
     1. Aaron James
 
-        Login Compoenent and Profile view
+         Login Component and authentication functionality (using firebase), Profile View including Account details, Order history and Payment methods
 
     2. Caleb Radbourne
 
-        Contributions here
+        Most if not all code found in DisplayProductRow.vue, HomeView.vue, ProductListView.vue, App.vue. Routes involving the previously mentioned files in routs/index.js.
 
     3. Ayaan Mustafa
 
-        Contributions here
+        Cart Page
 
     4. Jacob Rempel
 
-        Contributions here
+        Everything found in server.js, as well as all the axios endpoints in apiServices.js, and minor frontend contributions like making the contact us form post to the backend. Aaron and I also setup and managed the firebase firestore for database management. I also made read_csv_into_firebase.js which reads the amazon dataset into firebase.
 
     5. Suhrab Roeen
 
-        Contributions here
+        All functionality found within Products page (views/ProductView.vue)
 
     6. Patric Baguisa
 
-        Contributions here
+         SVG Logo, About Page, Contact Page
 
