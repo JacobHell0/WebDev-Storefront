@@ -43,5 +43,13 @@ export default //CURRENTLY ALL JUST DEBUG REQUESTS
                 console.error('Error fetching products by rating:', error);
                 throw error;
             });
-    }
+    },
+    getByCategory() {
+        return apiClient.get('category')
+            .then(response => response.data)
+            .catch(error => {
+                console.error('Error fetching products by category:', error);
+                throw error;
+            });
+    },
 };
