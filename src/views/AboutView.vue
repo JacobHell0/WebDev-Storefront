@@ -71,21 +71,21 @@
 </template>
 
 <script setup>
-// No special script needed unless you want state or lifecycle events
+
 </script>
 
 <style scoped>
-/* General about-page wrapper */
+
 .about-page {
   padding: 1rem;
-  color: #ffffff; /* adjust to your theme */
-  background-color: #1a1a1a; /* or match your site’s background */
+  color: #ffffff; 
+  background-color: #1a1a1a; 
 }
 
-/* Hero section styling */
+
 .hero {
   text-align: center;
-  background: #003c71; /* your brand color */
+  background: #003c71; 
   padding: 2rem 1rem;
   margin-bottom: 2rem;
   border-radius: 8px;
@@ -101,7 +101,7 @@
   font-size: 1.1rem;
 }
 
-/* Company info section */
+
 .company-info {
   margin-bottom: 2rem;
   text-align: center;
@@ -125,23 +125,23 @@
 }
 
 .member-card {
-  background: #002b55; /* brand color or contrast color */
+  background: #002b55; 
   padding: 1rem;
   border-radius: 8px;
-  width: 200px; /* fixed width or use max-width for responsiveness */
+  width: 200px; 
   text-align: center;
 }
 
-/* Replace the team member image with a letter */
+
 .member-letter {
-  background-color: #66baff; /* lighter color for contrast */
+  background-color: #66baff; 
   color: #003c71;
   font-size: 40px;
   font-weight: bold;
   width: 80px;
   height: 80px;
-  line-height: 80px; /* centers the letter vertically */
+  line-height: 80px; 
   margin: 0 auto 0.5rem;
-  border-radius: 50%; /* creates a perfect circle */
+  border-radius: 50%; 
 }
 </style>

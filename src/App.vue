@@ -104,14 +104,14 @@ header {
   align-items: center;
 }
 
-/* Responsive, scalable logo */
+
 .logo-svg {
   width: clamp(60px, 20vw, 300px);
   height: auto;
   transition: width 0.3s ease;
 }
 
-/* Center Search Bar */
+
 .search-bar-container {
   width: 100%;
   max-width: 400px;
@@ -124,7 +124,7 @@ header {
   width: 100%;
 }
 
-/* Right Navigation */
+
 .header-nav {
   justify-self: end;
 }
