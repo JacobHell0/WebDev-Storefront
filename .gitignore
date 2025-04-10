@@ -29,6 +29,9 @@ coverage
 
 *.tsbuildinfo
 
+#contributions
+contributions.txt
+
 # Firebase secrets
 secrets
 
