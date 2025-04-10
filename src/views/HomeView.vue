@@ -64,10 +64,18 @@ async function loadOrderHistory() {
   try {
     const result = await apiServices.getOrderHistory(user.uid);
     const flatProducts = result.flat();
+
+    const uniqueProducts = Object.values(
+      flatProducts.reduce((acc, product) => {
+        acc[product.id] = product;
+        return acc;
+      }, {})
+    );
+
     router.push({
       name: 'ProductListView',
       query: {
-        data: JSON.stringify(flatProducts),
+        data: JSON.stringify(uniqueProducts),
         title: 'Buy Again'
       }
     });
