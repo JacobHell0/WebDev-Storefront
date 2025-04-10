@@ -24,7 +24,7 @@
           <div class="price-quantity-container">
             <div class="price-row">
                 <span v-if="product.discount_price !== null" class="current-price">${{ product.discount_price?.toFixed(2) }}</span>
-                <span v-if="product.discount_price !== null" class="discount-percent">-{{ Math.round((1 - product.discount_price/product.actual_price) * 100) }}%</span>
+                <span v-if="product.discount_price !== null" class="discount-percent">-{{ Math.max(1, Math.round(1 - product.discount_price/product.actual_price) * 100) }}%</span>
                 <span v-else class="current-price">${{ product.actual_price?.toFixed(2) }}</span>
             </div>
             <div class="quantity-selector">
@@ -67,7 +67,7 @@
                             <!-- Same logic as earlier but in the cards -->
                             <div class="price-row">
                                 <span v-if="product.discount_price !== null" class="suggested-current-price">${{ product.discount_price?.toFixed(2) }}</span>
-                                <span v-if="product.discount_price !== null" class="suggested-discount-percent">-{{ Math.round((1 - product.discount_price/product.actual_price) * 100) }}%</span>
+                                <span v-if="product.discount_price !== null" class="suggested-discount-percent">-{{ Math.max(Math.round((1 - product.discount_price/product.actual_price) * 100)) }}%</span>
                                 <span v-else class="suggested-current-price">${{ product.actual_price?.toFixed(2) }}</span>
                             </div>
                             <span v-if="product.discount_price !== null" class="suggested-original-price">List: ${{ product.actual_price?.toFixed(2) }}</span>
