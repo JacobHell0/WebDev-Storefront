@@ -440,6 +440,42 @@ app.get('/api/cart/get/:userid/', async (req, res) => {
     }
 });
 
+app.delete('/api/cart/delete/:userid/:productid', async (req, res) => {
+    console.log("deleting by id");
+    const { userid, productid } = req.params;
+
+    const cartRef = db.collection('users').doc(userid).collection('cart');
+
+    try {
+        const querySnapshot = await cartRef.get();
+
+        // Collect all product IDs
+        const allProductIDs = querySnapshot.docs.map(snapshot => {
+            const data = snapshot.data();
+            console.log(data);
+            for(let entry of data.productIds) {
+                console.log("test: ", entry);
+                if(entry.id === productid) {
+                    // Update the document in Firestore
+                    // Delete the product ID here
+                    data.productIds.splice(data.productIds.indexOf(entry), 1); //remove product
+                    snapshot.ref.update({ productIds: data.productIds });
+                    break;
+                }
+            }
+        });
+
+        // Log or return the collected product IDs
+        console.log("All product IDs:", allProductIDs);
+
+
+        res.status(200).send('All carts deleted successfully');
+    } catch (error) {
+        console.error('Error deleting carts: ', error);
+        res.status(500).send('Error deleting carts');
+    }
+});
+
 app.delete('/api/cart/delete/all/:userid', async (req, res) => {
     const { userid } = req.params;
 
@@ -449,7 +485,7 @@ app.delete('/api/cart/delete/all/:userid', async (req, res) => {
         const querySnapshot = await cartRef.get();
 
         //delete all documents in cart
-        const deletePromises = querySnapshot.docs.map(doc => doc.ref.delete()); //found from firebase
+        const deletePromises = querySnapshot.docs.map(doc => doc.ref.delete()); //found from firebase docs
         await Promise.all(deletePromises);
 
         console.log('All carts deleted successfully');

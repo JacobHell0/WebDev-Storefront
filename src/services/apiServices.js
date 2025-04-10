@@ -132,10 +132,18 @@ export default //CURRENTLY ALL JUST DEBUG REQUESTS
         return apiClient.delete(`/cart/delete/all/${userid}`)
             .then(response => response.data)
             .catch(error => {
-                console.error(`Error deleting item by id: ${error}`);
+                console.error(`Error deleting cart: ${error}`);
                 throw error;
             });
     },
+    deleteItemInCart(userid, productid) {
+        return apiClient.delete(`/cart/delete/${userid}/${productid}`)
+            .then(response => response.data)
+            .catch(error => {
+                console.error(`Error deleting item by id: ${error}`);
+                throw error;
+            });
+    }
 
 
 
