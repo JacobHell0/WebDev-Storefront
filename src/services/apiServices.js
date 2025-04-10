@@ -74,4 +74,12 @@ export default //CURRENTLY ALL JUST DEBUG REQUESTS
                 throw error;
             });
     },
+    getByQuery(query) {
+        return apiClient.get(`/search/${query}`)
+            .then(response => response.data)
+            .catch(error => {
+                console.error('Error getting query', error)
+                throw error;
+            });
+    },
 };

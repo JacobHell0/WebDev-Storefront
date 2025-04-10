@@ -68,10 +68,6 @@ app.get('/api/products/:product_id', async (req, res) => {
     }
 });
 
-// app.get('api/category/:category', async (req, res) => {
-//     const { category } = req.params;
-
-// });
 
 app.get('/api/sort/high_ratings', async (req, res) => {
     const productsRef = db.collection('products').orderBy('ratings', 'desc');
@@ -215,13 +211,39 @@ app.get('/api/order/get/:userid', async (req, res) => {
     }
 });
 
+app.get('/api/search/:query', async (req, res) => {
+    const { query } = req.params;
+    console.log(`querying: ${query}`)
+
+    try {
+        const firebaseQuery = await
+        db.collection("products")      //\uf8ff is a very high unicode character so
+            .orderBy("lowercase_name") //if query was lap, the special character would
+            .startAt(`${query}`)       //essentially look like this: lap******* meaning
+            .endAt(`${query}\uf8ff`)   //the query would return anything starting with lap
+            .get()                     //like laptop, laptops, etc.
+                                       //unfortunately this is the best option because
+                                       //firebase doesn't support searching without
+                                       //paying for the blaze tier.
+
+        const results = firebaseQuery.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        console.log(`returning ${results.length} results`);
+        return res.status(200).json(results);
+
+    } catch (error) {
+        console.error(`Error fetching query: ${query}, error: ${error}`);
+        return res.status(500).json({message: 'Internal server error'});
+    }
+
+});
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////// Algolia Search ////////////////////////////////
-
-
-////////////////////////////////////////////////////////////////////////////////
 //Serve static files
 app.use(express.static(path.join(__dirname, 'dist')));
 

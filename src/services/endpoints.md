@@ -24,7 +24,26 @@ apiServices.getProduct('4V5WWqlflRrTHLdVF4oi')
 ## Secrets
 Place the secrets file: `capjas-webstore-firebase-adminsdk.json` into `secrets/capjas-webstore-firebase-adminsdk.json`
 
+## Format
+Template for endpoints:
+
+### `endpoint/name/url`
+Example request through axios
+```js
+apiServices.getSomething().then(...)
+```
+
+Example Output (json)
+```json
+{
+    "something": "is returned",
+    "...": "..."
+}
+```
+
 ## Fetch Data From The Database
+
+
 
 ### `/api/products/your_product_ID_here`
 
@@ -238,3 +257,47 @@ Expected Response, also here's the format `[[json data], [json data]]`.
   ],
 ]
 ```
+
+
+### `/api/search/your_query_goes_here`
+Example request through axios
+```js
+apiServices.getByQuery("lloyd").then(response => {
+    console.log(response);
+});
+```
+
+Example Output (list of json) [`{json}`, `{json}`]
+
+```json
+[
+  {
+    "id": "5YWpHg1NIzQYdZ5KlKwT",
+    "name": "Lloyd 1.5 Ton 3 Star Inverter Split Ac (5 In 1 Convertible, Copper, Anti-Viral + Pm 2.5 Filter, 2023 Model, White, Gls18I3...",
+    "lowercase_name": "lloyd 1.5 ton 3 star inverter split ac (5 in 1 convertible, copper, anti-viral + pm 2.5 filter, 2023 model, white, gls18i3...",
+    "main_category": "appliances",
+    "sub_category": "Air Conditioners",
+    "image": "https://m.media-amazon.com/images/I/31UISB90sYL._AC_UL320_.jpg",
+    "link": "https://www.amazon.in/Lloyd-Inverter-Convertible-Anti-Viral-GLS18I3FWAMC/dp/B0BRKXTSBT/ref=sr_1_4?qid=1679134237&s=kitchen&sr=1-4",
+    "ratings": 4.2,
+    "no_of_ratings": 2,
+    "discount_price": 527.984,
+    "actual_price": 943.84
+  },
+  {
+    "id": "CHsmy7vKFO9Ec9qyu8BF",
+    "name": "lloyd SOFTSPUN Microfiber Cloth - 4 pcs - 40x40 cms - 340 GSM Grey- Thick Lint & Streak-Free Multipurpose Cloths - Automotive Mi...",
+    "main_category": "car & motorbike",
+    "sub_category": "All Car & Motorbike Products",
+    "image": "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/91C6slV1XGL._AC_UL320_.jpg",
+    "link": "https://www.amazon.in/SOFTSPUN-Microfiber-Cleaning-Detailing-Polishing/dp/B077BFH786/ref=sr_1_1?qid=1679222595&s=automotive&sr=1-1",
+    "ratings": 4.3,
+    "no_of_ratings": 78,
+    "discount_price": 4.304,
+    "actual_price": 9.664,
+    "lowercase_name": "lloyd softspun microfiber cloth - 4 pcs - 40x40 cms - 340 gsm grey- thick lint & streak-free multipurpose cloths - automotive mi..."
+  }
+]
+```
+
+

@@ -48,9 +48,13 @@
           //   });
           // });
 
-          apiServices.getOrderHistory("5XKz7uJJioNpCgGHqdQ3w164JyN2").then(response => {
+          // apiServices.getOrderHistory("5XKz7uJJioNpCgGHqdQ3w164JyN2").then(response => {
+          //   console.log(response);
+          // });
+
+        apiServices.getByQuery("lloyd").then(response => {
             console.log(response);
-          });
+        });
 
 
       }
