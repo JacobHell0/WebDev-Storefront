@@ -64,6 +64,10 @@ const cartItems = ref([
 // onUnmounted(() => {
 //     console.log('--- cart unmounted ---');
 // });
+
+function thisWorks() {
+    console.log("you clicked checkout")
+}
 </script>
 
 <template>
@@ -74,9 +78,7 @@ const cartItems = ref([
         </div>
         <div id="summary">
             <CartSummary :cartProp="cartItems"></CartSummary>
-            <button id="checkout">
-                <h3>Proceed To Checkout</h3>
-            </button>
+            <button id="checkout" @click="thisWorks()">Proceed To Checkout</button>
         </div>
     </div>
 </template>
@@ -104,5 +106,15 @@ h1 {
     background-color: white;
     border: 1px solid black;
     border-radius: 3px;
+}
+
+button {
+    cursor: pointer;
+    margin-top: 5%;
+    margin-left: 25%;
+    /* font-size: large; */
+    width: 50%;
+    font-size: medium;
+    padding: 10px;
 }
 </style>
