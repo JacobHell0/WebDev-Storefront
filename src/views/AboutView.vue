@@ -11,11 +11,9 @@
 
     <!-- Company Info -->
     <section class="company-info">
-      <h2>CAPJAS</h2>
+      <h2>CAPJAS  —   Cutting-Edge Affordable Products: Just Amazing Stuff.</h2>
       <p>
-        Cutting-Edge Affordable Products: Just Amazing Stuff. <br />
-
-        We deliver top-quality electrons for all your needs! Shipping across the
+        We deliver top-quality items for all your needs! Shipping across the
         world, wherever, whenever you want!
       </p>
       <p>
