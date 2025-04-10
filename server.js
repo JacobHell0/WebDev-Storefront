@@ -55,7 +55,10 @@ app.get('/api/products/:product_id', async (req, res) => {
         return res.status(404).json({message: "error, document does not exist"})
     } else {
         console.log('Document fetched:', doc.data());
-        return res.status(200).json(doc.data())
+
+        let newJson = doc.data();
+        newJson.id = product_id;
+        return res.status(200).json(newJson);
     }
 });
 
@@ -106,6 +109,40 @@ app.get('/api/category/:category', async (req, res) => {
     return res.status(200).json(products);
 
 });
+
+app.put('/api/order/put/:userid', async (req, res) => {
+    // this endpoint will accept a list of json objects, it will only look at
+    // their id to put them in the database
+    const { userid } = req.params;
+    const { productIds } = req.body;
+
+    if (!Array.isArray(productIds) || productIds.length === 0) {
+        return res.status(400).json({ message: 'productIds must be a non-empty array of json data' });
+    }
+
+    try {
+        const userRef = db.collection('users').doc(userid);
+        const orderHistoryRef = userRef.collection('orderhistory');
+
+        // Create a new order document
+        const newOrder = {
+            productIds,
+        };
+
+        const orderDocRef = await orderHistoryRef.add(newOrder);
+
+        return res.status(201).json({
+            message: 'Order added to user history',
+            orderId: orderDocRef.id,
+            data: newOrder
+        });
+
+    } catch (error) {
+        console.error('Error adding order:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
