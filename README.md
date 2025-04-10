@@ -11,15 +11,15 @@ A responsive e-commerence storefront built with Vue 3, served by a nodemon backe
 
 - **Detailed product page**
      
-    Comprehensive information for each product listed in the wwebstore, including imamges, ratings, and discounted pricing.
+    Comprehensive information for each product listed in the webstore, including images, ratings, and discounted pricing.
 
 - **Shopping Cart & Checkout**
 
-    Allows users to add items to a cart as they browse the website. Once users are done shopping, they are able to view their shopping cart, adjust quanities and remove items from thier cart if desired. Once the user begins to checkout, their information will automatically be pulled from thier profile for a seamless checkout process.
+    Allows users to add items to a cart as they browse the website. Once users are done shopping, they are able to view their shopping cart, adjust quantities and remove items from their cart if desired. Once the user begins to checkout, their information will automatically be pulled from their profile for a seamless checkout process.
 
 - **Custom Brand Logo**
 
-    A vistually distinct and responsive SVG logo
+    A visually distinct and responsive SVG logo
     
 - **User Authentication**  
 
@@ -27,7 +27,7 @@ A responsive e-commerence storefront built with Vue 3, served by a nodemon backe
 
 - **Profile Management**
 
-    Users can view and edit thier account information at anytime, including Name, contact details, address. Users can also add payment methods for an easy checkout process.
+    Users can view and edit their account information at anytime, including Name, contact details, address. Users can also add payment methods for an easy checkout process.
 
 - **Order History**
 
