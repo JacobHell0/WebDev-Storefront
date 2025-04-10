@@ -52,18 +52,18 @@
         //     console.log(response);
         //   });
 
-        apiServices.getByQuery("lloyd").then(response => {
-            console.log(response);
-        });
+        // apiServices.getByQuery("lloyd").then(response => {
+        //     console.log(response);
+        // });
 
         // apiServices.getUniqueCategories().then(response => {
         //     console.log(response);
         // });
 
-        // apiServices.postContact("5XKz7uJJioNpCgGHqdQ3w164JyN2", "Jacob",
-        //                         "jacob.h3ll0@gmail.com", "Subject!", "MY MESSAGE").then(response => {
-        //     console.log(response);
-        // });
+        apiServices.postContact("5XKz7uJJioNpCgGHqdQ3w164JyN2", "Jacob",
+                                "jacob.h3ll0@gmail.com", "Subject!", "MY MESSAGE").then(response => {
+            console.log(response);
+        });
 
       }
     }

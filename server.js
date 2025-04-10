@@ -8,6 +8,9 @@ import cors from 'cors';
 // const algoliasearch = require('algoliasearch');
 import { algoliasearch } from 'algoliasearch';
 
+import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+dotenv.config({path: './secrets/.env'});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -288,6 +291,33 @@ app.get('/api/get/main-categories', async (req, res) => {
     return res.send(UNIQUE_CATEGORIES);
 });
 
+async function sendEmail(name, address, subject, body) {
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASS
+        }
+    });
+
+    const mailOptions = {
+        from: process.env.EMAIL,
+        to: address,
+        cc: process.env.WEBDEV_ADDRESS,
+        subject: subject,
+        text: body,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Mail Sent');
+    } catch (error) {
+        console.error('Error sending mail:', error);
+    }
+
+}
+
 app.post('/api/post/contact', async (req, res) => {
     const { userid, name, email, subject, message } = req.body;
     console.log("sending email");
@@ -309,6 +339,8 @@ app.post('/api/post/contact', async (req, res) => {
         };
 
         const messageDocRef = await messageRef.add(newMessage);
+
+        await sendEmail(name, email, subject, message);
 
     } catch (error) {
         console.error('Error adding order:', error);
