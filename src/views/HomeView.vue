@@ -12,9 +12,9 @@
       <div class="category-dropdown">
         <select v-model="selectedCategory" @change="goToCategory">
           <option disabled value="">Search by Category</option>
-          <option value="grocery & gourmet foods">Grocery & Gourmet Foods</option>
-          <option value="tv, audio & cameras">TV, Audio & Cameras</option>
-          <option value="appliances">Appliances</option>
+          <option v-for="category in mainCategories" :key="category" :value="category">
+            {{ category }}
+          </option>
         </select>
       </div>
     </div>
@@ -38,19 +38,30 @@
       title = "Grocery & Gourmet Foods:"
     />
 
-
   </main>
 </template>
 
 <script setup>
 import DisplayProductRow from '@/components/DisplayProductRow.vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import apiServices from '@/services/apiServices';
 import { getAuth } from 'firebase/auth';
 
 const router = useRouter();
 const selectedCategory = ref('');
+const mainCategories = ref([]);
+
+onMounted(async () => {
+  try {
+    const response = await apiServices.getUniqueCategories();
+    mainCategories.value = response;
+
+  } catch (error) {
+    console.error('Failed to load categories:', error);
+  }
+});
+
 
 async function loadOrderHistory() {
   const auth = getAuth();
