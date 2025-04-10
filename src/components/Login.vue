@@ -167,7 +167,7 @@
             } 
             else if (field === 'postalcode') 
             {
-                this.errors.city = this.userDetails.postalcode && this.userDetails.postalcode.length > 4 ? '' : 'Postal/Zip Code must be at least 5 characters.';
+                this.errors.postalcode = this.userDetails.postalcode && this.userDetails.postalcode.length > 4 ? '' : 'Postal/Zip Code must be at least 5 characters.';
             }
             else if (field === 'province') 
             {

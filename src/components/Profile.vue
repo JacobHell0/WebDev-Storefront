@@ -1,110 +1,431 @@
-<!-- This is a simple profile component to fetch the current users data (Debug Profile) -->
+<!-- This is a profile component to fetch the current users over all account information and settings -->
 
 <template>
-    <div class="profile-container" v-if="user">
-      <h1>Profile</h1>
-      <p><strong>First Name:</strong> {{ userDetails.firstName }}</p>
-      <p><strong>Last Name:</strong> {{ userDetails.lastName }}</p>
-      <p><strong>Email:</strong> {{ user.email }}</p>
-      <p><strong>Address:</strong> {{ userDetails.address }}</p>
-      <p><strong>Postal Code:</strong> {{ userDetails.postalcode }}</p>
-      <p><strong>City:</strong> {{ userDetails.city }}</p>
-      <p><strong>Province/State:</strong> {{ userDetails.province }}</p>
-      <p><strong>Country:</strong> {{ userDetails.country }}</p>
-      <p><strong>Telephone:</strong> {{ userDetails.telephone }}</p>
-      <button @click="logout">Logout</button>
+    <div class="profile-layout">
+    <div class="sidebar">
+        <ul>
+            <li v-for="tab in tabs" :key="tab" @click="currentTab = tab" :class="{ active: currentTab === tab }">
+            {{ tab }}
+            </li>
+        </ul>
     </div>
-  </template>
+    <div class="content">
+        <div v-if="currentTab === 'Account Overview' && user">
+            <!-- Profile Details -->
+            <div class="profile-container">
+            <h1>Profile Details</h1>
+            <div v-if="editMode">
+            <p><strong>First Name:</strong> <input v-model="editableUserDetails.firstName" />
+            <span class="error" v-if="errors.firstName">{{ errors.firstName }}</span></p>
+            <p><strong>Last Name:</strong> <input v-model="editableUserDetails.lastName" />
+            <span class="error" v-if="errors.lastName">{{ errors.lastName }}</span></p>
+            <p><strong>Email:</strong> <input v-model="editableUserDetails.email" />
+            <span class="error" v-if="errors.email">{{ errors.email }}</span></p>
+            <p><strong>Address:</strong> <input v-model="editableUserDetails.address" />
+            <span class="error" v-if="errors.address">{{ errors.address }}</span></p>
+            <p><strong>Postal Code:</strong> <input v-model="editableUserDetails.postalcode" />
+            <span class="error" v-if="errors.postalcode">{{ errors.postalcode }}</span></p>
+            <p><strong>City:</strong> <input v-model="editableUserDetails.city" />
+            <span class="error" v-if="errors.city">{{ errors.city }}</span></p>
+            <p><strong>Province/State:</strong> <input v-model="editableUserDetails.province" />
+            <span class="error" v-if="errors.province">{{ errors.province }}</span></p>
+            <p><strong>Country:</strong> <input v-model="editableUserDetails.country" />
+            <span class="error" v-if="errors.country">{{ errors.country }}</span></p>
+            <p><strong>Telephone:</strong> <input v-model="editableUserDetails.telephone" />
+            <span class="error" v-if="errors.telephone">{{ errors.telephone }}</span></p>
+            </div>
+            <div v-else>
+            <p><strong>First Name:</strong> {{ userDetails.firstName }}</p>
+            <p><strong>Last Name:</strong> {{ userDetails.lastName }}</p>
+            <p><strong>Email:</strong> {{ userDetails.email }}</p>
+            <p><strong>Address:</strong> {{ userDetails.address }}</p>
+            <p><strong>Postal Code:</strong> {{ userDetails.postalcode }}</p>
+            <p><strong>City:</strong> {{ userDetails.city }}</p>
+            <p><strong>Province/State:</strong> {{ userDetails.province }}</p>
+            <p><strong>Country:</strong> {{ userDetails.country }}</p>
+            <p><strong>Telephone:</strong> {{ userDetails.telephone }}</p>
+            </div>
+            <div class="button-group">
+                <button v-if="editMode" @click="saveProfile">Save</button>
+                <button v-else @click="editProfile">Edit Profile</button>
+                <button @click="editMode ? cancelEdit() : logout()">{{ editMode ? 'Cancel' : 'Logout' }}</button>
+            </div>
+            </div>
+        </div>
+        <!-- Order History -->
+        <div v-if="currentTab === 'Order History'" class="order-history">
+            <p>No orders to show</p>
+        </div>
+        <!-- Payment methods -->
+        <div v-if="currentTab === 'Payment Methods'" class="payment-methods">
+            <p>No Payment Methods on File</p>
+            <button @click="addPaymentMethod">Add Payment Method</button>
+        </div>
+        <!-- Settings -->
+        <div v-if="currentTab === 'Settings'" class="settings">
+            <p>Add Settings Here</p>
+        </div>
+    </div>
+    </div>
+</template>
   
   
-  <script>
-    import { getAuth, onAuthStateChanged } from 'firebase/auth';
-    import { getFirestore, doc, getDoc } from 'firebase/firestore';
-    import { app } from '@/firebase';
-    import { logoutUser } from '@/services/logoutService';
-    import router from '@/router';
-    
-    export default {
-        data() 
-        {
-            return {
-                user: null,
-                userDetails: {}
-            };
-        },
-        created() 
-        {
-            const auth = getAuth(app);
-            onAuthStateChanged(auth, async (user) => {
-                if (user) 
-                {
-                this.user = user;
-                await this.fetchUserDetails(user.uid);
-                }
-                else 
-                {
-                    router.push('/login'); //If the user isnt logged in, redirect them to login
-                }
-            });
-        },
-        methods: 
-        {
-            async fetchUserDetails(uid) 
+<script>
+  import { getAuth, onAuthStateChanged } from 'firebase/auth';
+  import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+  import { app } from '@/firebase';
+  import { logoutUser } from '@/services/logoutService';
+  import router from '@/router';
+  
+  export default 
+  {
+      data() 
+      {
+          return {
+              user: null,
+              userDetails: {},
+              editableUserDetails: {},
+              errors: {},
+              editMode: false,
+              currentTab: 'Account Overview',
+              tabs: ['Account Overview', 'Order History', 'Payment Methods', 'Settings']
+          };
+      },
+      created() 
+      {
+          const auth = getAuth(app); //Get user auth
+          onAuthStateChanged(auth, async (user) => {
+              if (user) //Make sure they are authed
+              {
+                  this.user = user;
+                  await this.fetchUserDetails(user.uid);
+              } 
+              else //Otherwise return them to the login page
+              {
+                  router.push('/login');
+              }
+          });
+      },
+      methods: {
+          async fetchUserDetails(uid) //Get the users id
+          {
+              const db = getFirestore(app);
+              const docRef = doc(db, "users", uid);
+              const docSnap = await getDoc(docRef);
+      
+              if (docSnap.exists()) //Grab all thier info if they exist in the database
+              {
+                  this.userDetails = docSnap.data();
+                  this.editableUserDetails = JSON.parse(JSON.stringify(this.userDetails));
+              } 
+              else //Otherwise log the error
+              {
+                  console.log("No user data found!");
+              }
+          },
+          editProfile() //Toggles edit
+          {
+              this.editMode = true;
+              this.editableUserDetails = JSON.parse(JSON.stringify(this.userDetails));
+              this.errors = {};
+          },
+          async saveProfile() //Save the information in fields
+          {
+              if (this.validateForm()) //Only proceed if the all information editted is still valid
+              {
+                  const db = getFirestore(app);
+                  const docRef = doc(db, "users", this.user.uid);
+                  try
+                  {
+                      await updateDoc(docRef, this.editableUserDetails);
+                      this.userDetails = JSON.parse(JSON.stringify(this.editableUserDetails));
+                      this.editMode = false; //Disable editting after save success
+                  } 
+                  catch (error) //Log the rror
+                  {
+                      console.error("Failed to update user details:", error);
+                  }
+              } 
+              else 
+              {
+                  console.error("Field validation failed!"); //Debug, validation failed
+              }
+          },
+          cancelEdit() //Functionality to cancel editting
+          {
+              this.editableUserDetails = JSON.parse(JSON.stringify(this.userDetails));
+              this.editMode = false;
+          },
+          logout() 
+          {
+              logoutUser().then(() => {
+                  router.push('/login');
+              }).catch(error => {
+                  console.error("Failed to logout", error);
+              });
+          },
+          validateField(field)  //Validation logic (same as the login)
+          {
+            if (field === 'email') 
             {
-                const db = getFirestore(app);
-                const docRef = doc(db, "users", uid);
-                const docSnap = await getDoc(docRef);
-        
-                if (docSnap.exists()) 
-                {
-                    this.userDetails = docSnap.data();
-                } 
-                else 
-                {
-                    console.log("No user data found!");
-                }
-            },
-            logout() 
+                this.errors.email = this.editableUserDetails.email && /@.*\.(com|ca|net)$/.test(this.editableUserDetails.email.trim()) ? '' : 'Invalid email address.';
+            } 
+            else if (field === 'firstName') 
             {
-                logoutUser().then(() => {
-                router.push('/login'); //Redirect to login page after logout
-                }).catch(error => {
-                console.error("Failed to logout", error);
-                });
+                this.errors.firstName = this.editableUserDetails.firstName && /^[a-zA-Z]+$/.test(this.editableUserDetails.firstName.trim()) ? '' : 'First name must contain only letters.';
+            } 
+            else if (field === 'lastName') 
+            {
+                this.errors.lastName = this.editableUserDetails.lastName && /^[a-zA-Z]+$/.test(this.editableUserDetails.lastName.trim()) ? '' : 'Last name must contain only letters.';
+            } 
+            else if (field === 'address') 
+            {
+                this.errors.address = this.editableUserDetails.address && /^\d+\s[A-Za-z\s]+$/.test(this.editableUserDetails.address.trim()) ? '' : 'Address must start with numbers followed by the street name.';
+            } 
+            else if (field === 'city') 
+            {
+                this.errors.city = this.editableUserDetails.city && /^[a-zA-Z\s]+$/.test(this.editableUserDetails.city.trim()) ? '' : 'City must contain only letters.';
+            } 
+            else if (field === 'postalcode') 
+            {
+                this.errors.postalcode = this.editableUserDetails.postalcode && this.editableUserDetails.postalcode.trim().length > 4 ? '' : 'Postal/Zip Code must be at least 5 characters.';
+            } 
+            else if (field === 'province') 
+            {
+                this.errors.province = this.editableUserDetails.province.trim() ? '' : 'Please select a province or state.';
+            } 
+            else if (field === 'country') 
+            {
+                this.errors.country = this.editableUserDetails.country.trim() ? '' : 'Please select a country.';
+            } 
+            else if (field === 'telephone') 
+            {
+                this.errors.telephone = this.editableUserDetails.telephone && /^\d{10}$/.test(this.editableUserDetails.telephone.trim()) ? '' : 'Telephone must be 10 digits.';
             }
-        }
-    };
-  </script>
+          },
+          validateForm() //function to validate each field
+          {
+              this.validateField('email');
+              this.validateField('password');
+              this.validateField('firstName');
+              this.validateField('lastName');
+              this.validateField('address');
+              this.validateField('postalcode');
+              this.validateField('city');
+              this.validateField('province');
+              this.validateField('country');
+              this.validateField('telephone');
+              return Object.values(this.errors).every(error => !error);
+          }
+      }
+  };
+</script>
   
   
-  <style scoped>
-  .profile-container 
-  {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 50vh; 
-      text-align: center;
-      padding-top: 10vh; 
-  }
 
-  button 
-  {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-  }
+  
+  
+<style scoped>
 
-  button:hover 
-  {
-      background-color: #45a049;
-  }
+    .profile-layout 
+    {
+        display: flex;
+        height: 100vh;
+        min-height: 100vh; 
+    }
+
+    .sidebar 
+    {
+        width: 200px; 
+        background-color: #0077CA; 
+        height: 100%;
+        color: white;
+        box-sizing: border-box;
+        flex-direction: column; 
+    }
+
+    .sidebar ul 
+    {
+        list-style: none;
+        padding: 5px;
+        margin-bottom: 0; 
+        flex-grow: 1; 
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sidebar ul li 
+    {
+        padding: 12px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .sidebar ul li:last-child 
+    {
+        margin-bottom: 0; 
+    }
+
+    .sidebar ul li.active 
+    {
+        background-color: #E75D2A; 
+        color: white; 
+    }
+
+    .sidebar ul li:hover 
+    {
+        background-color: #005991; 
+        color: #FFF; 
+    }
+
+    .content 
+    {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch; 
+        padding: 20px;
+        height: 100%;
+    }
+
+    .profile-container 
+    {
+        width: 100%;
+        flex-grow: 1;
+        font-size: 16px; 
+        border: 1px solid #ccc;
+        padding: 20px;
+        box-sizing: border-box;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-radius: 5px;
+    }
+
+    .profile-container h1 
+    {
+        margin-bottom: 24px; 
+        font-weight: bold;
+        font-size: 32px;
+    }
+
+    .profile-container p 
+    {
+        margin-bottom: 24px; 
+        font-size: inherit; 
+    }
+
+    .profile-container p strong 
+    {
+        font-weight: bold; 
+    }
+
+
+    .button-group 
+    {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+
+    button 
+    {
+        padding: 10px 20px;
+        background-color: #003C71;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    button:hover 
+    {
+        background-color: #014d8f;
+    }
+
+    .error 
+    {
+        color: red;
+        font-size: 0.85em;
+        margin-left: 10px;
+    }
+
+    .order-history 
+    {
+        width: 100%; 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 80%; 
+    }
+
+    .order-history 
+    {
+        width: 100%; 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 80%; 
+        font-size: 32px;
+        font-weight: bold;
+    }
+
+    .payment-methods 
+    {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;  
+        font-size: 32px;
+        font-weight: bold;
+    }
+
+    .payment-methods > * {
+        margin-top: 20px; 
+        border: 1px solid #ccc; 
+        padding: 10px; 
+        width: 80%; 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        border-radius: 5px; 
+        display: flex; 
+        flex-direction: column; 
+        justify-content: center; 
+        align-items: center; 
+        text-align: center;
+    }
+
+    .payment-methods > *:first-child 
+    {
+        margin-top: 0; 
+    }
+
+
+    .settings 
+    {
+        width: 100%; 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 80%; 
+        font-size: 32px;
+        font-weight: bold;
+    }
+
 </style>
+  
+  
+  
+  
+  
+  
+  
+
 
 
   
