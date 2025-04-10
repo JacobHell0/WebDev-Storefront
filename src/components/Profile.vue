@@ -29,7 +29,7 @@
                 <span class="error" v-if="errors.city">{{ errors.city }}</span></p>
                 
                 <div class="form-group">
-                    <label for="province">Province/State:</label>
+                    <label for="province">Province/State: </label>
                     <select id="province" v-model="editableUserDetails.province" required>
                         <option value="">Select Province/State</option>
                         <option v-for="province in provinces" :key="province" :value="province">{{ province }}</option>
@@ -39,7 +39,7 @@
 
                 <!-- Dropdown for Country -->
                 <div class="form-group">
-                    <label for="country">Country:</label>
+                    <label for="country">Country: </label>
                     <select id="country" v-model="editableUserDetails.country" @change="updateProvinces" required>
                         <option value="">Select Country</option>
                         <option value="Canada">Canada</option>
@@ -90,12 +90,19 @@
             {{ showCardForm ? 'Cancel' : 'Add Payment Method' }}
             </button>
 
-            <div v-if="showCardForm" class="form-group" style="width: 100%; max-width: 400px;">
+            <div v-if="showCardForm" class="card-entry-form">
                 <input v-model="newCard.cardHolder" placeholder="Name on Card" />
+                <span class="error" v-if="cardErrors.cardHolder">{{ cardErrors.cardHolder }}</span>
+
                 <input v-model="newCard.cardNumber" placeholder="Card Number" />
+                <span class="error" v-if="cardErrors.cardNumber">{{ cardErrors.cardNumber }}</span>
+
                 <input v-model="newCard.expiryDate" placeholder="MM/YY" />
+                <span class="error" v-if="cardErrors.expiryDate">{{ cardErrors.expiryDate }}</span>
+
                 <input v-model="newCard.csv" placeholder="CSV" />
-            <button @click="saveCard">Save Card</button>
+                <span class="error" v-if="cardErrors.csv">{{ cardErrors.csv }}</span>
+                <button @click="saveCard">Save Card</button>
             </div>
         </div>
     </div>
@@ -132,6 +139,13 @@ export default
             csv: ''
             },
             cards: [],
+
+            cardErrors: {
+            cardHolder: '',
+            cardNumber: '',
+            expiryDate: '',
+            csv: ''
+            },
         };
     },
     created() 
@@ -166,38 +180,6 @@ export default
             else //Otherwise log the error
             {
                 console.log("No user data found!");
-            }
-        },
-        async saveCard() //Function which saves the card to the database
-        {
-            const db = getFirestore(app);
-            const userId = this.user.uid;
-            const cardsRef = collection(db, 'users', userId, 'paymentCards');
-            try 
-            {
-                await addDoc(cardsRef, this.newCard);
-                this.newCard = { cardHolder: '', cardNumber: '', expiryDate: '', csv: ''};
-                this.showCardForm = false;
-                await this.fetchCards(); //Update the card list
-            } 
-            catch (err) 
-            {
-                console.error("Failed to save card:", err); //Debug error
-            }
-        },
-        async fetchCards() //Function to fetch the preexisting cards from the databse
-        {
-            const db = getFirestore(app);
-            const userId = this.user.uid;
-            const cardsRef = collection(db, 'users', userId, 'paymentCards');
-            try 
-            {
-                const querySnapshot = await getDocs(cardsRef);
-                this.cards = querySnapshot.docs.map(doc => doc.data());
-            } 
-            catch (error) 
-            {
-                console.error("Failed to fetch cards:", error); //Debug message
             }
         },
         editProfile() //Toggles edit
@@ -296,14 +278,94 @@ export default
         },
         updateProvinces() 
         {
-        if (this.editableUserDetails.country === 'Canada')
+            if (this.editableUserDetails.country === 'Canada')
+            {
+                this.provinces = ['Ontario', 'Quebec', 'Nova Scotia', 'New Brunswick', 'Manitoba', 'British Columbia', 'Prince Edward Island', 'Saskatchewan', 'Alberta', 'Newfoundland and Labrador'];
+            } 
+            else if (this.editableUserDetails.country === 'USA') 
+            {
+                this.provinces = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
+            } 
+        },
+        async saveCard() //Function which saves the card to the database
         {
-            this.provinces = ['Ontario', 'Quebec', 'Nova Scotia', 'New Brunswick', 'Manitoba', 'British Columbia', 'Prince Edward Island', 'Saskatchewan', 'Alberta', 'Newfoundland and Labrador'];
-        } 
-        else if (this.editableUserDetails.country === 'USA') 
+            if (this.validateCardForm())
+            {
+                const db = getFirestore(app);
+                const userId = this.user.uid;
+                const cardsRef = collection(db, 'users', userId, 'paymentCards');
+                try 
+                {
+                    await addDoc(cardsRef, this.newCard);
+                    this.newCard = { cardHolder: '', cardNumber: '', expiryDate: '', csv: ''};
+                    this.showCardForm = false;
+                    await this.fetchCards(); //Update the card list
+                } 
+                catch (err) 
+                {
+                    console.error("Failed to save card:", err); //Debug error
+                }
+            }
+        },
+        async fetchCards() //Function to fetch the preexisting cards from the databse
         {
-            this.provinces = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
-        } 
+            const db = getFirestore(app);
+            const userId = this.user.uid;
+            const cardsRef = collection(db, 'users', userId, 'paymentCards');
+            try 
+            {
+                const querySnapshot = await getDocs(cardsRef);
+                this.cards = querySnapshot.docs.map(doc => doc.data());
+            } 
+            catch (error) 
+            {
+                console.error("Failed to fetch cards:", error); //Debug message
+            }
+        },
+        validateCardForm() //Validates the card entries
+        {
+            const { cardHolder, cardNumber, expiryDate, csv } = this.newCard;
+            let valid = true;
+
+            if (!cardHolder.trim() || !/^[a-zA-Z\s]+$/.test(cardHolder)) // Card holder name: only letters and spaces
+            {
+                this.cardErrors.cardHolder = 'Name must contain only letters and spaces.';
+                valid = false;
+            } 
+            else 
+            {
+                this.cardErrors.cardHolder = '';
+            }
+
+            if (!/^\d{16}$/.test(cardNumber))  //Make sure the card num is 16 digits
+            {
+                this.cardErrors.cardNumber = 'Card number must be 16 digits.';
+                valid = false;
+            } 
+            else 
+            {
+                this.cardErrors.cardNumber = '';
+            }
+
+            if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate)) //Make sure date format MM/YY
+            {
+                this.cardErrors.expiryDate = 'Expiry date must be in MM/YY format.';
+                valid = false;
+            } 
+            else 
+            {
+                this.cardErrors.expiryDate = '';
+            }
+
+            if (!/^\d{3,4}$/.test(csv)) //Make sure CSV is 3 to 4 digits
+            {
+                this.cardErrors.csv = 'CSV must be 3 or 4 digits.';
+                valid = false;
+            } else {
+                this.cardErrors.csv = '';
+            }
+
+            return valid;
         }
     },
     watch: 
@@ -451,7 +513,7 @@ export default
     .error 
     {
         color: red;
-        font-size: 0.85em;
+        font-size: 0.40em;
         margin-left: 10px;
     }
 
@@ -516,6 +578,54 @@ export default
         width: 80%;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
+
+    .card-entry-form 
+    {
+        border: 2px solid #0077CA;
+        border-radius: 12px;
+        padding: 20px;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 20px;
+    }
+
+    .card-entry-form input 
+    {
+        padding: 12px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        transition: border 0.2s ease;
+    }
+
+    .card-entry-form input:focus 
+    {
+        outline: none;
+        border-color: #0077CA;
+        box-shadow: 0 0 0 3px rgba(0, 119, 202, 0.2);
+    }
+
+    .card-entry-form button 
+    {
+        background-color: #0077CA;
+        color: white;
+        padding: 12px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .card-entry-form button:hover 
+    {
+        background-color: #005a9e;
+    }
+
 </style>
   
   
