@@ -8,6 +8,7 @@
 
   <script>
   import apiServices from '@/services/apiServices';
+import { response } from 'express';
 
   export default
    {
@@ -32,12 +33,15 @@
             console.error('There was an error fetching the server status:', error); //Error
           });
 
-          apiServices.getProduct('4V5WWqlflRrTHLdVF4oi').then(response => {
-            console.log(response);
-          });
+          // apiServices.getProduct('4V5WWqlflRrTHLdVF4oi').then(response => {
+          //   console.log(response);
+          // });
           // apiServices.getSortedByRating().then(response => {
           //   console.log(response);
           // });
+          apiServices.getByCategory().then(response => {
+            console.log(response);
+          });
 
       }
     }

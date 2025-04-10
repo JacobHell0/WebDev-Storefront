@@ -87,3 +87,55 @@ Expected output (list of json data)
   }
 ]
 ```
+
+### `http://localhost:3000/api/category/your_category_here`
+The will return all the products with the category you enter
+
+Example request through axios
+```js
+apiServices.getByCategory().then(response => {
+    console.log(response);
+});
+```
+
+Expected Response
+```js
+[
+  {
+    "id": "0tkG5F1OrCSIG9zi8AjH",
+    "name": "Cadbury Bournvita 5 Star Magic Health Drink, 750g Pouch",
+    "main_category": "grocery & gourmet foods",
+    "sub_category": "All Grocery & Gourmet Foods",
+    "image": "https://m.media-amazon.com/images/I/614FIW5c6HL._AC_UL320_.jpg",
+    "link": "https://www.amazon.in/Bournvita-Magic-Chocolate-Health-Refill/dp/B07BFQHW2Z/ref=sr_1_698?qid=1679216185&s=grocery&sr=1-698",
+    "ratings": 4.3,
+    "no_of_ratings": 8,
+    "discount_price": null,
+    "actual_price": 5.648
+  },
+  {
+    "id": "4V5WWqlflRrTHLdVF4oi",
+    "name": "Sugar Free Green Natural Stevia Jar(200 g)",
+    "main_category": "grocery & gourmet foods",
+    "sub_category": "All Grocery & Gourmet Foods",
+    "image": "https://m.media-amazon.com/images/I/61rBhkTJ6EL._AC_UL320_.jpg",
+    "link": "https://www.amazon.in/Sugarfree-Green-100-Natural-Stevia/dp/B082TC6KL9/ref=sr_1_699?qid=1679216185&s=grocery&sr=1-699",
+    "ratings": 4.3,
+    "no_of_ratings": 1,
+    "discount_price": 2.592,
+    "actual_price": 2.72
+  },
+  {
+    "id": "Jicr6FEDLqSSMFs4eX6p",
+    "name": "Nutraj 100% Natural Dried Premium California Walnut Kernels, 500g (2 X 250g) | Pure Without Shell Walnut Kernels | Akhrot ...",
+    "main_category": "grocery & gourmet foods",
+    "sub_category": "All Grocery & Gourmet Foods",
+    "image": "https://m.media-amazon.com/images/I/71f5UPOWDqL._AC_UL320_.jpg",
+    "link": "https://www.amazon.in/Nutraj-California-Walnut-Kernels-500g/dp/B07P56M78L/ref=sr_1_697?qid=1679216185&s=grocery&sr=1-697",
+    "ratings": 3.9,
+    "no_of_ratings": 6,
+    "discount_price": 10.976,
+    "actual_price": 15.968
+  }
+]
+```

@@ -38,10 +38,10 @@ initializeApp({
 
 const db = getFirestore();
 
-/////////////////////////////   Error Handling    /////////////////////////////
+/////////////////////////////   Error Handling    //////////////////////////////
 
 
-///////////////////////////// Firebase Endpoints /////////////////////////////
+////////////////////////////// Firebase Endpoints //////////////////////////////
 
 app.get('/api/products/:product_id', async (req, res) => {
     const { product_id } = req.params;
@@ -84,9 +84,35 @@ app.get('/api/sort/high_ratings', async (req, res) => {
 
 });
 
+app.get('/api/category/:category', async (req, res) => {
+    const { category } = req.params;
+    console.log(`querying: ${category}`)
 
-//////////////////////////////////////////////////////////////////////////////
+    const productsRef = db.collection('products').where("main_category", "==", category);
+    const snapshot = await productsRef.get();
 
+    // check for response
+    if (snapshot.empty) {
+        console.log(`category search: error, no documents found for category: ${category}`);
+        return res.status(404).json({ message: `error, no documents found for category: ${category}` });
+    }
+
+    // Map the query snapshot to an array of document data
+    const products = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
+
+    return res.status(200).json(products);
+
+});
+
+////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////// Algolia Search ////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////////////
 //Serve static files
 app.use(express.static(path.join(__dirname, 'dist')));
 
