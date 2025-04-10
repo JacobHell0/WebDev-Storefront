@@ -4,7 +4,7 @@
 import { RouterLink, RouterView } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import Logo from './components/Logo.vue';
+//import Logo from './components/Logo.vue';
 
 //Check the status of user authentication
 const isLoggedIn = ref(false);
