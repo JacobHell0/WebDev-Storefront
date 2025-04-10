@@ -11,10 +11,9 @@
 
     <!-- Company Info -->
     <section class="company-info">
-      <h2>CAPJAS</h2>
+      <h2>CAPJAS  —   Cutting-Edge Affordable Products: Just Amazing Stuff.</h2>
       <p>
-        Cutting-Edge Affordable Products: Just Amazing Stuff. <br />
-        We deliver top-quality electrons for all your needs! Shipping across the
+        We deliver top-quality items for all your needs! Shipping across the
         world, wherever, whenever you want!
       </p>
       <p>
@@ -29,7 +28,6 @@
       <div class="team-members">
 
         <div class="member-card">
-          <!-- Replace image with letter -->
           <div class="member-letter">C</div>
           <h3>Caleb Radbourne</h3>
           <p>Front-End Developer</p>
@@ -131,7 +129,6 @@
   width: 200px; 
   text-align: center;
 }
-
 
 .member-letter {
   background-color: #66baff; 

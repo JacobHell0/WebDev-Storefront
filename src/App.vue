@@ -1,61 +1,110 @@
+<!-- Modified to allow login and check login status. If a profile is logged in, it can view profile if, if not, it can choose login -->
+
+<script setup>
+import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router';
+import { onMounted, ref, computed } from 'vue';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import Logo from './components/Logo.vue';
+import apiServices from '@/services/apiServices';
+
+const isLoggedIn = ref(false);
+const router = useRouter();
+const route = useRoute();
+
+const searchText = ref('');
+const searchError = ref(false);
+
+onMounted(() => {
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    isLoggedIn.value = !!user;
+  });
+});
+
+async function handleSearch() {
+  const query = searchText.value.trim().toLowerCase(); // ensure lowercase
+
+  if (!query) return;
+
+  try {
+    const results = await apiServices.getByQuery(query); // pass lowercase query
+
+    if (results.length > 0) {
+      router.push({
+        name: 'ProductListView',
+        query: {
+          data: JSON.stringify(results),
+          title: `Results for "${searchText.value}"`
+        }
+      });
+      searchError.value = false;
+    } else {
+      searchText.value = '';
+      searchError.value = true;
+    }
+  } catch (err) {
+    console.error('Search failed:', err);
+    searchText.value = '';
+    searchError.value = true;
+  }
+}
+
+
+const searchPlaceholder = computed(() =>
+  searchError.value ? 'No Items Found' : 'Search...'
+);
+</script>
+
 <template>
   <main class="full-page">
-    <!-- HEADER -->
     <header>
       <div class="header-container">
-        <!-- Logo (Left Column) -->
+        <!-- Logo/Site Name -->
         <div class="header-name-logo">
-          <Logo class="logo-svg" />
+          <Logo class ="logo"/>
+          <h1></h1>
         </div>
 
-        <!-- Search Bar (Center Column) -->
+        <!-- Search Bar -->
         <div class="search-bar-container">
-          <input type="text" placeholder="Search..." />
+          <input
+            type="text"
+            v-model="searchText"
+            :placeholder="searchPlaceholder"
+            :class="{ 'error': searchError }"
+          />
+          <button class="search-btn" @click="handleSearch">Search</button>
         </div>
 
-        <!-- Navigation (Right Column) -->
-        <nav class="header-nav">
+        <!-- Navbar -->
+        <nav>
           <ul>
             <li><RouterLink to="/">Home</RouterLink></li>
             <li><RouterLink to="/cart">Cart</RouterLink></li>
             <li><RouterLink to="/status">Server Test (Debug)</RouterLink></li>
-            <li v-if="!isLoggedIn"><RouterLink to="/login">Login</RouterLink></li>
-            <li v-if="isLoggedIn"><RouterLink to="/profile">Profile</RouterLink></li>
+            <!-- Show Login link only if NOT logged in -->
+            <li><RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink></li>
+            <!-- Show Profile link ONLY IF LOGGED IN -->
+            <li><RouterLink v-if="isLoggedIn" to="/profile">Profile</RouterLink></li>
           </ul>
         </nav>
       </div>
     </header>
 
-    <!-- MAIN CONTENT -->
     <div class="content">
-      <RouterView />
+      <RouterView :key="route.fullPath"/>
     </div>
 
-    <!-- FOOTER -->
     <footer>
       <div class="footer-container">
-        <RouterLink to="/about">About</RouterLink>
-        <span> | </span>
-        <RouterLink to="/contact">Contact</RouterLink>
+          <RouterLink to="/about">About</RouterLink>
+          <span> | </span>
+          <RouterLink to="/contact">Contact</RouterLink>
       </div>
     </footer>
   </main>
+
 </template>
-
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import { onMounted, ref } from 'vue'
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import Logo from './components/Logo.vue'
-
-const isLoggedIn = ref(false)
-onMounted(() => {
-  const auth = getAuth()
-  onAuthStateChanged(auth, (user) => {
-    isLoggedIn.value = !!user
-  })
-})
-</script>
 
 <style>
 html, body, #app {
@@ -73,98 +122,116 @@ html, body, #app {
   max-width: 100%;
 }
 
-/* HEADER */
+.main-content {
+  flex: 1;
+  padding-top: 80px;
+}
+
 header {
   background-color: #003C71;
   color: white;
   padding: 1rem;
   width: 100%;
-  /* position: fixed; */
-  position: sticky;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 10;
 }
 
-/* Grid layout for header:
-   - Left: Logo
-   - Center: Search Bar
-   - Right: Nav Links
-*/
 .header-container {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  width: 100%;
-  gap: 1rem;
+  min-width: auto ;
 }
 
 .header-name-logo {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
 }
 
-
-.logo-svg {
-  width: clamp(60px, 20vw, 300px);
-  height: auto;
-  transition: width 0.3s ease;
+.logo {
+  width: 40px;
+  height: 40px;
 }
 
+h1 {
+  font-size: 24px;
+}
 
 .search-bar-container {
-  width: 100%;
-  max-width: 400px;
   justify-self: center;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 400px;
+  width: 100%;
 }
 
 .search-bar-container input {
   padding: 8px;
   border-radius: 4px;
-  width: 100%;
+  flex: 1;
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease;
 }
+
+.search-bar-container input.error {
+  border-color: red;
+}
+
+.search-btn {
+  background-color: white;
+  color: #0077ca;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.search-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.search-error-msg {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+  text-align: center;
+}
+
 
 
 .header-nav {
   justify-self: end;
 }
 
-.header-nav ul {
+nav ul {
   display: flex;
   gap: 16px;
   list-style: none;
-  margin: 0;
   padding: 0;
+  margin: 0;
 }
 
-.header-nav a {
+nav a {
   color: white;
   padding: 8px 16px;
-  text-decoration: none;
 }
 
-.header-nav a:hover {
+nav a:hover {
   text-decoration: underline;
 }
 
-.header-nav a.router-link-exact-active {
+nav a.router-link-exact-active {
   background-color: #E75D2A;
 }
 
-/* MAIN CONTENT */
-.content {
-  flex: 1;
-  overflow-y: auto;
-  padding-top: 0;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-header{
-  margin-bottom: 0;
-}
-
-/* FOOTER */
+/* Footer Styling */
 footer {
   background-color: #003C71;
   color: white;
@@ -178,7 +245,9 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
   gap: 0.5rem;
+  min-width: auto;
 }
 
 .footer-container a {
@@ -188,5 +257,13 @@ footer {
 
 .footer-container a:hover {
   text-decoration: underline;
+}
+
+.content{
+  flex: 1;
+  overflow-y: auto;
+  padding-top: 71.99px;
+  width: 100%;
+  box-sizing: border-box;
 }
 </style>

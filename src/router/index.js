@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import ServerStatus from '@/components/ServerStatus.vue'
 import Login from '../components/Login.vue';
 import Profile from '../components/Profile.vue'; 
+import Cart from '@/components/Cart.vue';
 import ProductListView from '../views/ProductListView.vue';
 
 const router = createRouter({
@@ -18,6 +19,11 @@ const router = createRouter({
       path: '/about',
       name: 'about',
       component: () => import('../views/AboutView.vue'),
+    },
+    {
+      path: '/contact',
+      name: 'contact',
+      component: () => import('../views/Contact.vue'),
     },
     {
       path: '/status',
@@ -45,7 +51,12 @@ const router = createRouter({
       name: 'ProductListView',
       component: ProductListView,
       props: route => ({ initialProducts: route.query.data ? JSON.parse(route.query.data) : [], title: route.query.title || '' })
-    }
+    },
+    {
+      path: '/cart',
+      name: 'cart',
+      component: Cart
+    },
   ],
 })
 
