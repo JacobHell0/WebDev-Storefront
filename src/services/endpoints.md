@@ -260,6 +260,9 @@ Expected Response, also here's the format `[[json data], [json data]]`.
 
 
 ### `/api/search/your_query_goes_here`
+
+This endpoint uses Algolia search to perform fuzzy search against the firebase db.
+
 Example request through axios
 ```js
 apiServices.getByQuery("lloyd").then(response => {

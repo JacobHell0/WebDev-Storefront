@@ -102,7 +102,8 @@
   }
 
   function getDiscountPercent(original, discounted) {
-    return Math.round(((original - discounted) / original) * 100);
+    return Math.max(1, Math.round((1 - discounted / original) * 100))
+
 }
   </script>
   
