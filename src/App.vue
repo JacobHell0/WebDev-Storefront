@@ -1,13 +1,19 @@
 <!-- Modified to allow login and check login status. If a profile is logged in, it can view profile if, if not, it can choose login -->
 
 <script setup>
-import { RouterLink, RouterView } from 'vue-router';
-import { onMounted, ref } from 'vue';
+import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router';
+import { onMounted, ref, computed } from 'vue';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import Logo from './components/Logo.vue';
+import apiServices from '@/services/apiServices';
 
-//Check the status of user authentication
 const isLoggedIn = ref(false);
+const router = useRouter();
+const route = useRoute();
+
+const searchText = ref('');
+const searchError = ref(false);
+
 onMounted(() => {
   const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
@@ -15,7 +21,40 @@ onMounted(() => {
   });
 });
 
+async function handleSearch() {
+  const query = searchText.value.trim().toLowerCase(); // ensure lowercase
+
+  if (!query) return;
+
+  try {
+    const results = await apiServices.getByQuery(query); // pass lowercase query
+
+    if (results.length > 0) {
+      router.push({
+        name: 'ProductListView',
+        query: {
+          data: JSON.stringify(results),
+          title: `Results for "${searchText.value}"`
+        }
+      });
+      searchError.value = false;
+    } else {
+      searchText.value = '';
+      searchError.value = true;
+    }
+  } catch (err) {
+    console.error('Search failed:', err);
+    searchText.value = '';
+    searchError.value = true;
+  }
+}
+
+
+const searchPlaceholder = computed(() =>
+  searchError.value ? 'No Items Found' : 'Search...'
+);
 </script>
+
 <template>
   <main class="full-page">
     <header>
@@ -28,7 +67,13 @@ onMounted(() => {
 
         <!-- Search Bar -->
         <div class="search-bar-container">
-          <input type="text" placeholder="Search..." />
+          <input
+            type="text"
+            v-model="searchText"
+            :placeholder="searchPlaceholder"
+            :class="{ 'error': searchError }"
+          />
+          <button class="search-btn" @click="handleSearch">Search</button>
         </div>
 
         <!-- Navbar -->
@@ -47,7 +92,7 @@ onMounted(() => {
     </header>
 
     <div class="content">
-      <RouterView />
+      <RouterView :key="route.fullPath"/>
     </div>
 
     <footer>
@@ -104,11 +149,10 @@ header {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-
 }
 
 .logo {
-  width: 300px;
+  width: 40px;
   height: 40px;
 }
 
@@ -118,15 +162,49 @@ h1 {
 
 .search-bar-container {
   justify-self: center;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 400px;
   width: 100%;
-  max-width: 300px;
 }
 
 .search-bar-container input {
   padding: 8px;
   border-radius: 4px;
-  width: 100%;
+  flex: 1;
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease;
 }
+
+.search-bar-container input.error {
+  border-color: red;
+}
+
+.search-btn {
+  background-color: white;
+  color: #0077ca;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.search-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.search-error-msg {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+  text-align: center;
+}
+
+
 
 .header-nav {
   justify-self: end;
