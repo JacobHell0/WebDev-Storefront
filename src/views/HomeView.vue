@@ -4,6 +4,7 @@
 <template>
   <main class="home-page">
     <!-- Toolbar under header -->
+   <div class="home-toolbar-fixed">   
     <div class="home-toolbar">
       <button>Buy Again</button>
       <button>Deals</button>
@@ -36,10 +37,33 @@
           <option value="3up">3 stars & up</option>
         </select>
       </div>
-    </div>
+    </div> 
+  </div>
+
+  <div class="toolbar-spacer"></div>
+
+    <DisplayProductRow
+      source = "rating"
+      title = "Top Rated Picks:"
+    />
+
+    <DisplayProductRow
+      source = "appliances"
+      title = "Appliances:"
+    />
+
+    <DisplayProductRow
+      source = "grocery & gourmet foods"
+      title = "Grocery & Gourmet Foods:"
+    />
+
+
   </main>
 </template>
 
+<script setup>
+import DisplayProductRow from '@/components/DisplayProductRow.vue';
+</script>
 
 <style scoped>
 .home-toolbar {
@@ -51,6 +75,18 @@
   justify-content: center;
   background-color: #0077CA;
   color: white;
+}
+
+.toolbar-spacer {
+  height: 62.97px;
+}
+
+.home-toolbar-fixed {
+  position: fixed;
+  top: 65.47px;
+  width: 100%;
+  z-index: 9;
+  background-color: #0077CA;
 }
 
 .home-toolbar button {
