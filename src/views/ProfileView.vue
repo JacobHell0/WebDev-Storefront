@@ -443,6 +443,8 @@
         color: white;
         box-sizing: border-box;
         flex-direction: column; 
+        overflow: hidden;
+        position: sticky;
     }
 
     .sidebar ul 
@@ -499,7 +501,7 @@
         border: 1px solid #ccc;
         padding: 20px;
         box-sizing: border-box;
-        box-shadow: 0 2px 4px #00000034;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         border-radius: 5px;
     }
 
@@ -600,7 +602,7 @@
         border: 2px solid #ccc;
         border-radius: 8px;
         padding: 20px;
-        box-shadow: 0 2px 5px #00000034;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
     .order-item 
@@ -669,7 +671,7 @@
         border: 2px solid #0259a5; 
         padding: 10px; 
         width: 80%; 
-        box-shadow: 0 2px 5px #00000034; 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
         border-radius: 5px; 
         display: flex; 
         flex-direction: column; 
@@ -690,7 +692,7 @@
         border: 4px solid #33d10b;
         border-radius: 5px;
         width: 80%;
-        box-shadow: 0 2px 4px #00000034;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .card-entry-form 
@@ -700,7 +702,7 @@
         padding: 20px;
         width: 100%;
         max-width: 400px;
-        box-shadow: 0 4px 12px #00000034;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         display: flex;
         flex-direction: column;
         gap: 16px;
