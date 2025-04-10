@@ -86,8 +86,7 @@ app.get('/api/sort/high_ratings', async (req, res) => {
         ...doc.data()
     }));
 
-    console.log("success:\n");
-    console.log(products);
+    return res.status(200).json(products);
 
 });
 
