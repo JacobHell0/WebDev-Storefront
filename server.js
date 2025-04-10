@@ -397,7 +397,47 @@ app.put('/api/cart/put/:userid/', async (req, res) => {
 });
 
 app.get('/api/cart/get/:userid/', async (req, res) => {
-    //gets a full list of cart items
+    console.log("fetching cart items");
+
+    const { userid } = req.params;
+
+    try {
+        const userRef = db.collection('users').doc(userid);
+        const cartRef = userRef.collection('cart');
+
+        // Fetch all cart items from the 'cart' collection
+        const snapshot = await cartRef.get();
+
+        if (snapshot.empty) {
+            return res.status(404).json({
+                message: `Cart for user ${userid} is empty or does not exist.`
+            });
+        }
+
+        let returnData = [];
+
+        // Process each cart item
+        for (let doc of snapshot.docs) {
+
+            const cartItem = doc.data();
+            for (let {id: productId, count} of cartItem.productIds) { //net way of bundling items I found on stack overflow
+                let productDoc = await getProductById(productId);
+                let newJson = productDoc.data();
+                newJson.id = productId;
+                newJson.count = count;
+                returnData.push(newJson);
+            }
+        }
+
+        return res.status(200).json({
+            message: 'Cart items fetched successfully.',
+            cartItems: returnData
+        });
+
+    } catch (error) {
+        console.error('Error fetching cart items:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 

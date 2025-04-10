@@ -120,6 +120,14 @@ export default //CURRENTLY ALL JUST DEBUG REQUESTS
                 throw error;
             });
     },
+    getCartItems(userid) {
+        return apiClient.get(`/cart/get/${userid}/`)
+            .then(response => response.data)
+            .catch(error => {
+                console.error(`Error getting cart: ${error}`);
+                throw error;
+            });
+    },
 
 
 
