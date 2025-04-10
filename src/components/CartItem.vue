@@ -44,7 +44,7 @@ function remove_item() {
 <style scoped>
 tr {
   display: grid;
-  grid-template-columns: 20% 30% 25% 15% 10%;
+  grid-template-columns: 20% 30% 30% 10% 10%;
   grid-template-rows: auto;
 }
 
