@@ -69,40 +69,40 @@
             </div>
         </div>
         
-        <!-- Order History -->
-        <div v-if="currentTab === 'Order History'" class="order-history">
-            <div v-if="loadingOrders" class="no-orders">
-                <p>Loading...</p>
-            </div>
+            <!-- Order History -->
+            <div v-if="currentTab === 'Order History'" class="order-history">
+                <div v-if="loadingOrders" class="no-orders">
+                    <p>Loading...</p>
+                </div>
 
-            <div v-else-if="orderHistory.length === 0" class="no-orders">
-                <p>No Order History</p>
-            </div>
-        <div v-else class="order-list">
-            <div v-for="(order, orderIndex) in orderHistory" :key="orderIndex" class="order-box">
-            <h3>Order #{{ orderIndex + 1 }}</h3>
-            <div v-for="item in order" :key="item.id" class="order-item">
-                <img :src="item.image" :alt="item.name" class="item-image" />
-                <div class="item-details">
-                <a :href="item.link" target="_blank">{{ item.name }}</a>
-                <p>Price: ${{ (item.discount_price ?? item.actual_price).toFixed(2) }}</p>
+                <div v-else-if="orderHistory.length === 0" class="no-orders">
+                    <p>No Order History</p>
+                </div>
+            <div v-else class="order-list">
+                <div v-for="(order, orderIndex) in orderHistory" :key="orderIndex" class="order-box">
+                <h3>Order #{{ orderIndex + 1 }}</h3>
+                <div v-for="item in order" :key="item.id" class="order-item">
+                    <img :src="item.image" :alt="item.name" class="item-image" />
+                    <div class="item-details">
+                    <a :href="item.link" target="_blank">{{ item.name }}</a>
+                    <p>Price: ${{ (item.discount_price ?? item.actual_price).toFixed(2) }}</p>
+                    </div>
+                </div>
                 </div>
             </div>
             </div>
-        </div>
-        </div>
 
         <!-- Payment Methods -->
-        <div v-if="currentTab === 'Payment Methods'" class="payment-methods">
-            <div v-if="cards.length === 0">
-                <p>No Payment Methods on File</p>
-            </div>
-            <div v-else>
-                <div v-for="(card, index) in cards" :key="index" class="card-box">
-                    <p><strong>Card Holder:</strong> {{ card.cardHolder }}</p>
-                    <p><strong>Card Number:</strong> **** **** **** {{ card.cardNumber.slice(-4) }}</p>
-                    <p><strong>Expiry:</strong> {{ card.expiryDate }}</p>
+            <div v-if="currentTab === 'Payment Methods'" class="payment-methods">
+                <div v-if="cards.length === 0">
+                    <p>No Payment Methods on File</p>
                 </div>
+                <div v-else>
+                    <div v-for="(card, index) in cards" :key="index" class="card-box">
+                        <p><strong>Card Holder:</strong> {{ card.cardHolder }}</p>
+                        <p><strong>Card Number:</strong> **** **** **** {{ card.cardNumber.slice(-4) }}</p>
+                        <p><strong>Expiry:</strong> {{ card.expiryDate }}</p>
+                    </div>
             </div>
 
             <button @click="showCardForm = !showCardForm">
@@ -443,8 +443,6 @@
         color: white;
         box-sizing: border-box;
         flex-direction: column; 
-        overflow: hidden;
-        position: sticky;
     }
 
     .sidebar ul 
@@ -501,7 +499,7 @@
         border: 1px solid #ccc;
         padding: 20px;
         box-sizing: border-box;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 4px #00000034;
         border-radius: 5px;
     }
 
@@ -602,7 +600,7 @@
         border: 2px solid #ccc;
         border-radius: 8px;
         padding: 20px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 5px #00000034;
     }
 
     .order-item 
@@ -671,7 +669,7 @@
         border: 2px solid #0259a5; 
         padding: 10px; 
         width: 80%; 
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        box-shadow: 0 2px 5px #00000034; 
         border-radius: 5px; 
         display: flex; 
         flex-direction: column; 
@@ -692,7 +690,7 @@
         border: 4px solid #33d10b;
         border-radius: 5px;
         width: 80%;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 4px #00000034;
     }
 
     .card-entry-form 
@@ -702,7 +700,7 @@
         padding: 20px;
         width: 100%;
         max-width: 400px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 12px #00000034;
         display: flex;
         flex-direction: column;
         gap: 16px;
